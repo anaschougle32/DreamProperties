@@ -11,7 +11,7 @@ import Logo from "./Logo";
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const whatsappLink = "https://wa.me/917977288350?text=Hi,%20I'm%20interested%20in%20renting%20a%20car.";
+  const whatsappLink = "https://wa.me/917977288350?text=Hi,%20I'm%20interested%20in%20property%20inquiry.";
 
   // No longer using time display
 
@@ -50,52 +50,52 @@ const Header = () => {
       className={cn(
         "fixed w-full top-0 z-50 transition-all duration-300 backdrop-blur-md",
         isScrolled
-          ? "bg-white/80 dark:bg-gray-900/90 shadow-md py-2"
-          : "bg-white/50 dark:bg-gray-900/60 py-3"
+          ? "bg-white/80 shadow-md py-2"
+          : "bg-white/50 py-3"
       )}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-2 text-primary">
           <Logo className="h-8 w-8 md:h-10 md:w-10" />
-          <span className="font-satoshi font-bold text-xl md:text-2xl">
-            Go<span className="text-blue-600">Drive</span>
+          <span className="font-heading font-bold text-xl md:text-2xl">
+            Dream House <span className="text-blue-600">Properties</span>
           </span>
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
           <Link
             href="/"
-            className="nav-link font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400 transition-colors text-sm lg:text-base"
+            className="nav-link font-medium text-gray-900 hover:text-blue-600 transition-colors text-sm lg:text-base"
           >
             Home
           </Link>
           <Link
-            href="/cars"
-            className="nav-link font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400 transition-colors text-sm lg:text-base"
+            href="/properties"
+            className="nav-link font-medium text-gray-900 hover:text-blue-600 transition-colors text-sm lg:text-base"
           >
-            Cars
+            Properties
           </Link>
           <Link
             href="/locations"
-            className="nav-link font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400 transition-colors text-sm lg:text-base"
+            className="nav-link font-medium text-gray-900 hover:text-blue-600 transition-colors text-sm lg:text-base"
           >
             Locations
           </Link>
           <Link
             href="/blogs"
-            className="nav-link font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400 transition-colors text-sm lg:text-base"
+            className="nav-link font-medium text-gray-900 hover:text-blue-600 transition-colors text-sm lg:text-base"
           >
             Blog
           </Link>
           <Link
             href="/about"
-            className="nav-link font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400 transition-colors text-sm lg:text-base"
+            className="nav-link font-medium text-gray-900 hover:text-blue-600 transition-colors text-sm lg:text-base"
           >
             About
           </Link>
           <Link
             href="/contact"
-            className="nav-link font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400 transition-colors text-sm lg:text-base"
+            className="nav-link font-medium text-gray-900 hover:text-blue-600 transition-colors text-sm lg:text-base"
           >
             Contact
           </Link>
@@ -117,7 +117,7 @@ const Header = () => {
         </div>
 
         <button
-          className="md:hidden text-gray-900 dark:text-white p-2 rounded-lg bg-white/30 hover:bg-white/50 backdrop-blur-sm transition-all duration-300 mobile-menu-button shadow-sm"
+          className="md:hidden text-gray-900 p-2 rounded-lg bg-white/30 hover:bg-white/50 backdrop-blur-sm transition-all duration-300 mobile-menu-button shadow-sm"
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
         >

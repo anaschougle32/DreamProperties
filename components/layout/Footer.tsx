@@ -14,7 +14,7 @@ const Footer = () => {
     day: 'numeric'
   });
   
-  const whatsappLink = "https://wa.me/917977288350?text=Hi,%20I'm%20interested%20in%20renting%20a%20car.";
+  const whatsappLink = "https://wa.me/917977288350?text=Hi,%20I'm%20interested%20in%20property%20inquiry.";
 
   return (
     <>
@@ -30,11 +30,11 @@ const Footer = () => {
           {/* Company Info */}
           <div className="mb-8 md:mb-0">
             <h3 className="text-xl font-bold mb-4 flex items-center">
-              Zoi<span className="text-blue-500">CarRentals</span>
+              Dream House <span className="text-blue-500">Properties</span>
             </h3>
             <p className="text-gray-300 mb-6 max-w-xs text-sm md:text-base">
-              Premium self-drive car rentals in Goa with unlimited kilometers,
-              airport pickup, and 24/7 roadside assistance.
+              Premium real estate services in Mumbai with expert guidance,
+              legal assistance, and 10+ years of market experience.
             </p>
             <div className="flex space-x-4">
               <a
@@ -73,10 +73,18 @@ const Footer = () => {
             <ul className="space-y-2 text-sm md:text-base">
               <li>
                 <Link
-                  href="/cars"
+                  href="/properties"
                   className="text-gray-300 hover:text-blue-400 transition-colors block py-1"
                 >
-                  Our Cars
+                  Properties
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/locations"
+                  className="text-gray-300 hover:text-blue-400 transition-colors block py-1"
+                >
+                  Locations
                 </Link>
               </li>
               <li>
@@ -106,32 +114,40 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Services */}
           <div className="mb-8 md:mb-0">
-            <h3 className="text-lg font-bold mb-4 text-blue-400">Legal</h3>
+            <h3 className="text-lg font-bold mb-4 text-blue-400">Services</h3>
             <ul className="space-y-2 text-sm md:text-base">
               <li>
                 <Link
-                  href="/privacy-policy"
+                  href="/properties?listing_type=sale"
                   className="text-gray-300 hover:text-blue-400 transition-colors block py-1"
                 >
-                  Privacy Policy
+                  Buy Property
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/terms-and-conditions"
+                  href="/properties?listing_type=rent"
                   className="text-gray-300 hover:text-blue-400 transition-colors block py-1"
                 >
-                  Terms & Conditions
+                  Rent Property
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/refund-policy"
+                  href="/contact"
                   className="text-gray-300 hover:text-blue-400 transition-colors block py-1"
                 >
-                  Refund Policy
+                  Property Valuation
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="text-gray-300 hover:text-blue-400 transition-colors block py-1"
+                >
+                  Legal Assistance
                 </Link>
               </li>
             </ul>
@@ -144,7 +160,7 @@ const Footer = () => {
               <div className="flex items-start space-x-3">
                 <MapPin className="text-blue-500 mt-1 flex-shrink-0" size={18} />
                 <p className="text-gray-300">
-                  123 Beach Road, Calangute, <br /> North Goa, 403516
+                  123 Business Center, Bandra West, <br /> Mumbai, Maharashtra 400050
                 </p>
               </div>
               <div className="flex items-center space-x-3">
@@ -170,10 +186,10 @@ const Footer = () => {
               <div className="flex items-center space-x-3">
                 <Mail className="text-blue-500 flex-shrink-0" size={18} />
                 <a
-                  href="mailto:info@zoicarrentals.com"
+                  href="mailto:info@dreamhouseproperties.com"
                   className="text-gray-300 hover:text-blue-400 transition-colors"
                 >
-                  info@zoicarrentals.com
+                  info@dreamhouseproperties.com
                 </a>
               </div>
             </div>
@@ -183,22 +199,38 @@ const Footer = () => {
         {/* Google Map */}
         <div className="mt-10 md:mt-12 rounded-lg overflow-hidden shadow-lg">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3846.2959335844787!2d73.9731813!3d15.2754913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bbfb8f61bc69b3f%3A0x592c1cb201848c40!2sZoiCarRentals!5e0!3m2!1sen!2sin!4v1621000000000!5m2!1sen!2sin"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.8267739788!2d72.8261!3d19.0596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c8c6b3b3b3b3%3A0x3b3b3b3b3b3b3b3b!2sBandra%20West%2C%20Mumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1621000000000!5m2!1sen!2sin"
             width="100%"
             height="250"
             style={{ border: 0 }}
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="Google Map of ZoiCarRentals, Goa"
+            title="Google Map of Dream House Properties, Mumbai"
             className="w-full md:h-[300px]"
           ></iframe>
         </div>
 
         <div className="border-t border-gray-800 mt-10 md:mt-12 pt-6 md:pt-8">
-          <p className="text-gray-400 text-center text-xs md:text-sm">
-            © {currentYear} ZoiCarRentals. All rights reserved.
-          </p>
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <p className="text-gray-400 text-center md:text-left text-xs md:text-sm">
+              © {currentYear} Dream House Properties. All rights reserved.
+            </p>
+            <div className="flex space-x-4 text-xs md:text-sm">
+              <Link
+                href="/privacy-policy"
+                className="text-gray-400 hover:text-blue-400 transition-colors"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/terms-and-conditions"
+                className="text-gray-400 hover:text-blue-400 transition-colors"
+              >
+                Terms & Conditions
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

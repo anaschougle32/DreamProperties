@@ -1,60 +1,47 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Poppins } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import FloatingCTA from '@/components/common/FloatingCTA';
 
-// Configure Poppins font with basic settings
-const poppins = Poppins({ 
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-poppins',
-  display: 'swap',
-  preload: true,
-});
-
-// Apply font family to HTML element
-const fontClass = `${poppins.variable} font-sans`;
-
 export const metadata: Metadata = {
   title: {
-    default: 'GoDrive - Self Drive Car Rentals in Goa | Unlimited KM',
-    template: '%s | GoDrive Car Rentals Goa',
+    default: 'Dream House Properties - Premium Real Estate in Mumbai | Buy, Sell, Rent',
+    template: '%s | Dream House Properties',
   },
-  description: 'Premium self-drive car rentals in Goa with unlimited kilometers, airport pickup, and 24/7 roadside assistance. Book online or call now!',
-  keywords: 'car rental, self drive, Goa, rent a car, holiday car, unlimited km, airport pickup, car hire, SUV rental, budget car, affordable car rental',
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://godrive.com'),
+  description: 'Find your dream home in Mumbai with Dream House Properties. Premium apartments, villas, and independent houses for sale and rent in Bandra, Juhu, Powai, and other prime locations. Expert real estate services with 10+ years experience.',
+  keywords: 'real estate mumbai, property for sale, apartments mumbai, villas mumbai, buy property, rent property, dream house properties, bandra properties, juhu properties, powai properties, andheri properties, worli properties',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://dreamhouseproperties.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'GoDrive - Self Drive Car Rentals in Goa | Unlimited KM',
-    description: 'Premium self-drive car rentals in Goa with unlimited kilometers, airport pickup, and 24/7 roadside assistance. Book online or call now!',
-    url: 'https://godrive.com',
-    siteName: 'GoDrive Car Rentals',
+    title: 'Dream House Properties - Premium Real Estate in Mumbai',
+    description: 'Find your dream home in Mumbai with Dream House Properties. Premium apartments, villas, and independent houses for sale and rent in prime locations.',
+    url: 'https://dreamhouseproperties.com',
+    siteName: 'Dream House Properties',
     locale: 'en_US',
     type: 'website',
     images: [
       {
-        url: 'https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=1200&h=630&dpr=1',
+        url: '/images/hero-bg.jpg',
         width: 1200,
         height: 630,
-        alt: 'GoDrive Car Rentals in Goa',
+        alt: 'Dream House Properties - Premium Real Estate in Mumbai',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'GoDrive - Self Drive Car Rentals in Goa | Unlimited KM',
-    description: 'Premium self-drive car rentals in Goa with unlimited kilometers, airport pickup, and 24/7 roadside assistance. Book online or call now!',
-    images: ['https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=1200&h=630&dpr=1'],
+    title: 'Dream House Properties - Premium Real Estate in Mumbai',
+    description: 'Find your dream home in Mumbai with Dream House Properties. Premium apartments, villas, and independent houses for sale and rent in prime locations.',
+    images: ['/images/hero-bg.jpg'],
   },
   verification: {
     google: 'google-site-verification-code',
   },
-  category: 'travel',
+  category: 'real estate',
   robots: {
     index: true,
     follow: true,
@@ -68,7 +55,6 @@ export const metadata: Metadata = {
   },
 };
 
-// Add font class to the body instead of html
 export default function RootLayout({
   children,
 }: {
@@ -90,25 +76,29 @@ export default function RootLayout({
         />
         <link 
           rel="preconnect" 
-          href="https://images.pexels.com" 
+          href="https://api.fontshare.com" 
+          crossOrigin="anonymous"
+        />
+        <link 
+          rel="preconnect" 
+          href="https://fonts.cdnfonts.com" 
+          crossOrigin="anonymous"
+        />
+        <link 
+          rel="preconnect" 
+          href="https://images.unsplash.com" 
           crossOrigin="anonymous" 
         />
         <link 
           rel="dns-prefetch" 
-          href="https://images.pexels.com" 
-        />
-        {/* Preload fonts */}
-        <link
-          rel="preconnect"
-          href="https://api.fontshare.com"
-          crossOrigin="anonymous"
+          href="https://images.unsplash.com" 
         />
       </head>
-      <body className={`${poppins.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased bg-white text-gray-900">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
-          enableSystem
+          enableSystem={false}
           disableTransitionOnChange
         >
           <Header />
