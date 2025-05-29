@@ -1,204 +1,255 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card } from '@/components/ui/card';
+import { Search, MapPin, Home, TrendingUp, Users, Award } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-// Optimize images by using smaller high-quality images
-const heroImages = [
-  "https://images.pexels.com/photos/3608542/pexels-photo-3608542.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&dpr=1",
-  "https://images.pexels.com/photos/3757052/pexels-photo-3757052.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&dpr=1",
-  "https://images.pexels.com/photos/3290068/pexels-photo-3290068.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&dpr=1",
+const PROPERTY_TYPES = ['Apartment', 'Villa', 'Independent House', 'Duplex', 'Penthouse'];
+const LOCATIONS = ['Whitefield', 'Koramangala', 'HSR Layout', 'Electronic City', 'Indiranagar'];
+const PRICE_RANGES = [
+  { label: 'Under ₹50L', value: '0-5000000' },
+  { label: '₹50L - ₹1Cr', value: '5000000-10000000' },
+  { label: '₹1Cr - ₹2Cr', value: '10000000-20000000' },
+  { label: '₹2Cr - ₹5Cr', value: '20000000-50000000' },
+  { label: 'Above ₹5Cr', value: '50000000-999999999' },
 ];
 
-// Add structured data for SEO
-export function HeroStructuredData() {
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "RentalCarCompany",
-          "name": "GoDrive Car Rentals",
-          "image": heroImages[0],
-          "priceRange": "₹₹",
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "123 Beach Road, Calangute",
-            "addressLocality": "North Goa",
-            "postalCode": "403516",
-            "addressCountry": "IN"
-          },
-          "telephone": "+918888888888",
-          "description": "Premium self-drive car rentals in Goa with unlimited kilometers, airport pickup, and 24/7 roadside assistance."
-        })
-      }}
-    />
-  );
-}
+export default function Hero() {
+  const [searchData, setSearchData] = useState({
+    location: '',
+    propertyType: '',
+    priceRange: '',
+    listingType: 'sale'
+  });
 
-const Hero = () => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [pickupDate, setPickupDate] = useState<Date | undefined>(new Date());
-  const [returnDate, setReturnDate] = useState<Date | undefined>(
-    new Date(new Date().setDate(new Date().getDate() + 3))
-  );
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % heroImages.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (searchData.location) params.set('location', searchData.location);
+    if (searchData.propertyType) params.set('property_type', searchData.propertyType);
+    if (searchData.priceRange) {
+      const [min, max] = searchData.priceRange.split('-');
+      params.set('min_price', min);
+      params.set('max_price', max);
+    }
+    params.set('listing_type', searchData.listingType);
+    
+    window.location.href = `/properties?${params.toString()}`;
+  };
 
   return (
-    <section className="relative min-h-[600px] md:h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-20">
-      {/* Structured Data for SEO */}
-      <HeroStructuredData />
-      
-      {/* Background Images with Fade Transition */}
-      {heroImages.map((image, index) => (
-        <div
-          key={image}
-          className={cn(
-            "absolute inset-0 w-full h-full transition-opacity duration-1000",
-            index === currentImageIndex ? "opacity-100" : "opacity-0"
-          )}
-          aria-hidden="true"
-        >
-          <Image 
-            src={image} 
-            alt={`GoDrive Car Rental in Goa - Image ${index + 1}`}
-            fill
-            sizes="100vw"
-            priority={index === 0}
-            className="object-cover"
-            quality={index === 0 ? 85 : 75}
-            loading={index === 0 ? "eager" : "lazy"}
-          />
-        </div>
-      ))}
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/50" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/images/hero-bg.jpg"
+          alt="Luxury properties in Bangalore"
+          fill
+          className="object-cover"
+          priority
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
+      </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-12 md:py-0 text-center text-white">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 animate-fade-in">
-          Freedom to Explore Goa,{" "}
-          <span className="text-blue-400">Your Way</span>
-        </h1>
-        <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 max-w-3xl mx-auto">
-          Premium self-drive car rentals with unlimited kilometers,
-          airport pickup, and 24/7 roadside assistance.
-        </p>
-        
-        {/* Quick Search Form */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 md:p-6 max-w-4xl mx-auto mt-6 md:mt-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor="location" className="text-white mb-1 block">Pickup Location</Label>
-              <Input 
-                id="location" 
-                placeholder="Airport, Calangute, Panjim..." 
-                className="bg-white/20 text-white placeholder:text-white/70 border-white/30"
-              />
+      <div className="relative z-10 container mx-auto px-4 py-20">
+        <div className="max-w-4xl mx-auto text-center text-white">
+          {/* Main Heading */}
+          <div className="mb-8 animate-fade-in">
+            <h1 className="font-heading text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              Find Your
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400">
+                Dream Home
+              </span>
+              in Bangalore
+            </h1>
+            <p className="font-body text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+              Discover premium properties with Dream House Properties. From luxury apartments to spacious villas, 
+              we help you find the perfect home that matches your lifestyle and budget.
+            </p>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="flex flex-wrap justify-center items-center gap-8 mb-12 animate-slide-in-left">
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <Home className="w-5 h-5 text-primary-400" />
+              <span>500+ Properties</span>
             </div>
-            
-            <div>
-              <Label htmlFor="pickup-date" className="text-white mb-1 block">Pickup Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    id="pickup-date"
-                    variant="outline"
-                    className="w-full bg-white/20 text-white border-white/30 justify-start text-left font-normal"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {pickupDate ? format(pickupDate, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={pickupDate}
-                    onSelect={setPickupDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <Users className="w-5 h-5 text-primary-400" />
+              <span>1000+ Happy Families</span>
             </div>
-            
-            <div>
-              <Label htmlFor="return-date" className="text-white mb-1 block">Return Date</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    id="return-date"
-                    variant="outline"
-                    className="w-full bg-white/20 text-white border-white/30 justify-start text-left font-normal"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {returnDate ? format(returnDate, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
-                  <Calendar
-                    mode="single"
-                    selected={returnDate}
-                    onSelect={setReturnDate}
-                    initialFocus
-                    disabled={(date: Date) => date < (pickupDate || new Date())}
-                  />
-                </PopoverContent>
-              </Popover>
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <Award className="w-5 h-5 text-primary-400" />
+              <span>10+ Years Experience</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <TrendingUp className="w-5 h-5 text-primary-400" />
+              <span>Best ROI Guaranteed</span>
             </div>
           </div>
-          
-          <Button size="lg" className="w-full mt-4" asChild>
-            <Link href="/cars">
-              Search Available Cars <ChevronRight size={18} className="ml-2" />
-            </Link>
-          </Button>
-        </div>
-        
-        {/* Added more spacing above the buttons */}
-        <div className="flex flex-row items-center justify-center gap-4 mt-16 md:mt-20">
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
-            <Link href="/cars" className="group">
-              Browse All Cars
-              <ChevronRight size={18} className="ml-2 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </Button>
-          
-          <Button size="lg" variant="outline" className="border-white bg-black/80 text-white hover:bg-black hover:text-white" asChild>
-            <Link href="tel:+919082888912">
-              Call Us Now
-            </Link>
-          </Button>
+
+          {/* Search Form */}
+          <Card className="p-6 md:p-8 bg-white/95 backdrop-blur-sm shadow-2xl animate-slide-in-right">
+            <div className="mb-6">
+              <h2 className="font-heading text-2xl font-semibold text-gray-900 mb-2">
+                Start Your Property Search
+              </h2>
+              <p className="font-body text-gray-600">
+                Find properties that match your preferences
+              </p>
+            </div>
+
+            {/* Listing Type Toggle */}
+            <div className="flex bg-gray-100 rounded-lg p-1 mb-6 max-w-xs mx-auto">
+              <button
+                onClick={() => setSearchData(prev => ({ ...prev, listingType: 'sale' }))}
+                className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
+                  searchData.listingType === 'sale'
+                    ? 'bg-white text-primary-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Buy
+              </button>
+              <button
+                onClick={() => setSearchData(prev => ({ ...prev, listingType: 'rent' }))}
+                className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
+                  searchData.listingType === 'rent'
+                    ? 'bg-white text-primary-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Rent
+              </button>
+            </div>
+
+            {/* Search Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <Select onValueChange={(value) => setSearchData(prev => ({ ...prev, location: value }))}>
+                <SelectTrigger className="h-12">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-gray-400" />
+                    <SelectValue placeholder="Location" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  {LOCATIONS.map((location) => (
+                    <SelectItem key={location} value={location.toLowerCase()}>
+                      {location}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select onValueChange={(value) => setSearchData(prev => ({ ...prev, propertyType: value }))}>
+                <SelectTrigger className="h-12">
+                  <div className="flex items-center gap-2">
+                    <Home className="w-4 h-4 text-gray-400" />
+                    <SelectValue placeholder="Property Type" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  {PROPERTY_TYPES.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select onValueChange={(value) => setSearchData(prev => ({ ...prev, priceRange: value }))}>
+                <SelectTrigger className="h-12">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-gray-400" />
+                    <SelectValue placeholder="Price Range" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  {PRICE_RANGES.map((range) => (
+                    <SelectItem key={range.value} value={range.value}>
+                      {range.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Button 
+                onClick={handleSearch}
+                className="h-12 bg-primary-600 hover:bg-primary-700 text-white font-medium"
+                size="lg"
+              >
+                <Search className="w-4 h-4 mr-2" />
+                Search Properties
+              </Button>
+            </div>
+
+            {/* Quick Links */}
+            <div className="flex flex-wrap justify-center gap-4 text-sm">
+              <Link 
+                href="/properties?is_featured=true" 
+                className="text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Featured Properties
+              </Link>
+              <Link 
+                href="/properties?listing_type=rent" 
+                className="text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Rental Properties
+              </Link>
+              <Link 
+                href="/properties?property_type=villa" 
+                className="text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Luxury Villas
+              </Link>
+              <Link 
+                href="/locations" 
+                className="text-primary-600 hover:text-primary-700 font-medium"
+              >
+                Popular Locations
+              </Link>
+            </div>
+          </Card>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12 animate-fade-in">
+            <Button 
+              asChild
+              size="lg" 
+              className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 text-lg font-medium"
+            >
+              <Link href="/properties">
+                Explore All Properties
+              </Link>
+            </Button>
+            <Button 
+              asChild
+              variant="outline" 
+              size="lg" 
+              className="border-white text-white hover:bg-white hover:text-gray-900 px-8 py-4 text-lg font-medium"
+            >
+              <Link href="/contact">
+                Schedule a Visit
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Scroll Indicator - Hide on mobile */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden md:flex flex-col items-center">
-        <div className="w-8 h-12 border-2 border-white rounded-full flex justify-center mb-2">
-          <div className="w-1 h-3 bg-white rounded-full mt-2 animate-bounce" />
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
+          <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
         </div>
-        <span className="text-white text-sm">Scroll Down</span>
       </div>
     </section>
   );
-};
-
-export default Hero;
+}
