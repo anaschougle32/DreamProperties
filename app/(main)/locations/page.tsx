@@ -1,319 +1,227 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import { getLocations, Location } from "@/lib/supabase";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin } from "lucide-react";
+import { MapPin, Building2, TrendingUp, Users } from "lucide-react";
+import Link from "next/link";
+import { getLocations } from "@/lib/supabase";
+import { Location } from "@/lib/supabase";
 
 export const metadata: Metadata = {
-  title: "Car Rental Locations in Goa | ZoiCarRentals",
-  description: "Find our car rental services across Goa. We offer convenient pickup and drop locations in North Goa, South Goa, and major airports. Book your car rental today!",
-  keywords: "car rental locations Goa, car hire Goa, rent a car Goa, Calangute car rental, Panjim car rental, Madgaon car rental, Mopa Airport car rental, Dabolim Airport car rental, North Goa car rental, South Goa car rental",
+  title: "Mumbai Property Locations - Dream House Properties | Bandra, Juhu, Powai, Andheri",
+  description: "Explore premium property locations in Mumbai including Bandra West, Juhu, Powai, Andheri West, Lower Parel, and Worli. Find luxury apartments, villas, and independent houses in Mumbai's most sought-after neighborhoods.",
+  keywords: "Mumbai property locations, Bandra West properties, Juhu properties, Powai properties, Andheri West properties, Lower Parel properties, Worli properties, Mumbai real estate locations, premium neighborhoods Mumbai",
   openGraph: {
-    title: "Car Rental Locations in Goa | ZoiCarRentals",
-    description: "Find our car rental services across Goa. We offer convenient pickup and drop locations in North Goa, South Goa, and major airports.",
-    url: "https://zoicarrentals.com/locations",
-    siteName: "ZoiCarRentals",
-    locale: "en_US",
-    type: "website",
+    title: "Premium Property Locations in Mumbai - Dream House Properties",
+    description: "Discover luxury properties in Mumbai's prime locations including Bandra West, Juhu, Powai, and other prestigious neighborhoods.",
+    images: ['/images/mumbai-locations-og.jpg'],
+    type: 'website',
+    locale: 'en_IN',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Premium Property Locations in Mumbai - Dream House Properties",
+    description: "Discover luxury properties in Mumbai's prime locations including Bandra West, Juhu, Powai, and other prestigious neighborhoods.",
+    images: ['/images/mumbai-locations-og.jpg'],
   },
 };
 
 export default async function LocationsPage() {
-  // Default locations to use if database query fails
-  const defaultLocations = [
-    // North Goa Locations
-    {
-      id: 'default-calangute',
-      name: 'Calangute',
-      slug: 'calangute',
-      headline: 'Premium Car Rental Service in Calangute, Goa',
-      content: 'Find the best car rental deals in Calangute, Goa with ZoiCarRentals. We offer a wide range of vehicles from economy to luxury cars.',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-anjuna',
-      name: 'Anjuna',
-      slug: 'anjuna',
-      headline: 'Premium Car Rental Service in Anjuna, North Goa',
-      content: 'Looking for a reliable car rental in Anjuna, Goa? ZoiCarRentals offers a wide range of vehicles to suit your needs.',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-baga',
-      name: 'Baga',
-      slug: 'baga',
-      headline: 'Affordable Car Rental Service in Baga Beach, Goa',
-      content: 'Explore the vibrant Baga Beach area with a reliable car rental from ZoiCarRentals. Best rates guaranteed!',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-candolim',
-      name: 'Candolim',
-      slug: 'candolim',
-      headline: 'Luxury Car Rental Service in Candolim, North Goa',
-      content: 'Experience the beautiful beaches of Candolim with a premium car rental from ZoiCarRentals. Wide selection of vehicles available.',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-panjim',
-      name: 'Panjim',
-      slug: 'panjim',
-      headline: 'Reliable Car Rental Service in Panjim, Goa\'s Capital',
-      content: 'Explore Goa\'s charming capital city with a car rental from ZoiCarRentals in Panjim.',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-vagator',
-      name: 'Vagator',
-      slug: 'vagator',
-      headline: 'Self-Drive Car Rental in Vagator Beach, North Goa',
-      content: 'Rent a car in Vagator and explore the beautiful beaches and nightlife at your own pace with ZoiCarRentals.',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-morjim',
-      name: 'Morjim',
-      slug: 'morjim',
-      headline: 'Car Rental Services in Morjim Beach, North Goa',
-      content: 'Visit the turtle nesting beach of Morjim with a comfortable car rental from ZoiCarRentals. Best rates guaranteed!',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-arambol',
-      name: 'Arambol',
-      slug: 'arambol',
-      headline: 'Budget Car Rental in Arambol Beach, North Goa',
-      content: 'Explore the hippie paradise of Arambol with an affordable car rental from ZoiCarRentals. Book now!',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    
-    // South Goa Locations
-    {
-      id: 'default-colva',
-      name: 'Colva',
-      slug: 'colva',
-      headline: 'Premium Car Rental Service in Colva Beach, South Goa',
-      content: 'Discover the serene beaches of Colva with a reliable car rental from ZoiCarRentals. Wide range of vehicles available.',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-palolem',
-      name: 'Palolem',
-      slug: 'palolem',
-      headline: 'Car Rental Services in Palolem Beach, South Goa',
-      content: 'Explore the picturesque Palolem Beach with a comfortable car rental from ZoiCarRentals. Best rates guaranteed!',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-benaulim',
-      name: 'Benaulim',
-      slug: 'benaulim',
-      headline: 'Self-Drive Car Rental in Benaulim, South Goa',
-      content: 'Rent a car in Benaulim and explore the beautiful beaches at your own pace with ZoiCarRentals.',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-varca',
-      name: 'Varca',
-      slug: 'varca',
-      headline: 'Luxury Car Rental in Varca Beach, South Goa',
-      content: 'Experience the pristine beaches of Varca with a premium car rental from ZoiCarRentals. Wide selection available.',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-margao',
-      name: 'Margao',
-      slug: 'margao',
-      headline: 'Affordable Car Rental Service in Margao, South Goa',
-      content: 'Explore the commercial hub of South Goa with a reliable car rental from ZoiCarRentals. Best rates guaranteed!',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-agonda',
-      name: 'Agonda',
-      slug: 'agonda',
-      headline: 'Car Rental Services in Agonda Beach, South Goa',
-      content: 'Visit the secluded Agonda Beach with a comfortable car rental from ZoiCarRentals. Explore at your own pace!',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    
-    // Airports and Transportation Hubs
-    {
-      id: 'default-goa-airport',
-      name: 'Goa Airport',
-      slug: 'goa-airport',
-      headline: 'Convenient Car Rental Service at Dabolim Airport (GOI)',
-      content: 'Start your Goa adventure right from the airport with ZoiCarRentals at Goa Airport (Dabolim).',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-mopa-airport',
-      name: 'Mopa Airport',
-      slug: 'mopa-airport',
-      headline: 'Car Rental at Manohar International Airport, North Goa',
-      content: 'Rent a car directly from the new Mopa Airport with ZoiCarRentals. Seamless pickup and drop-off service available.',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-madgaon-railway',
-      name: 'Madgaon Railway Station',
-      slug: 'madgaon-railway',
-      headline: 'Car Rental Service at Madgaon Railway Station, Goa',
-      content: 'Arriving by train? Pick up your rental car directly from Madgaon Railway Station with ZoiCarRentals.',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
-      id: 'default-thivim-railway',
-      name: 'Thivim Railway Station',
-      slug: 'thivim-railway',
-      headline: 'Car Rental at Thivim Railway Station, North Goa',
-      content: 'Convenient car rental service at Thivim Railway Station with ZoiCarRentals. Book in advance for best rates!',
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-  ];
-  
   // Fetch locations from the database
-  let dbLocations: Location[] = [];
+  let locations: Location[] = [];
   try {
-    dbLocations = await getLocations();
-    console.log('Locations data from DB:', JSON.stringify(dbLocations));
+    locations = await getLocations();
+    console.log('Locations data from DB:', JSON.stringify(locations));
   } catch (error) {
     console.error('Error fetching locations:', error);
   }
-  
-  // Determine which locations to display
-  let displayLocations = [];
-  
-  // If we have locations from the database, use them
-  if (dbLocations && Array.isArray(dbLocations) && dbLocations.length > 0) {
-    displayLocations = [...dbLocations];
-    console.log('Using database locations, count:', displayLocations.length);
-  } else {
-    // Otherwise use default locations
-    displayLocations = defaultLocations;
-    console.log('Using default locations, count:', displayLocations.length);
+
+  // If no locations from database, show a message
+  if (!locations || locations.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <section className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 pt-24 md:pt-32 pb-16">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center">
+              <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">No Locations Available</h1>
+              <p className="text-gray-600 mb-8">
+                We're currently updating our location data. Please check back soon or contact us directly.
+              </p>
+              <Button asChild>
+                <Link href="/contact">Contact Us</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
   }
-  
+
   // Sort locations alphabetically
-  displayLocations.sort((a, b) => a.name.localeCompare(b.name));
+  locations.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-10 pt-24 md:pt-32">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">
-          Car Rental Locations in Goa
-        </h1>
-        <div className="text-lg text-blue-600 font-medium mb-4">
-          Find the Best Car Rental Services Across Goa | ZoiCarRentals
-        </div>
-        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-          Discover our convenient car rental locations throughout Goa. We offer pickup and drop services in North Goa, South Goa, and all major airports with flexible rental options to suit your travel needs.
-        </p>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 pt-24 md:pt-32 pb-16">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <MapPin className="w-4 h-4" />
+              <span>Mumbai Property Locations</span>
+            </div>
+            
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-gray-900 leading-tight">
+              Explore Premium Properties Across
+              <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Mumbai's Prime Locations
+              </span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Discover luxury apartments, premium villas, and independent houses in Mumbai's most sought-after neighborhoods. 
+              From Bandra West's coastal charm to Powai's modern infrastructure, find your perfect property location.
+            </p>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {displayLocations.map((location) => (
-          <Card key={location.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="mb-3">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-blue-600 flex-shrink-0" />
-                  <h2 className="text-xl font-bold">Car Rental in {location.name}</h2>
-                </div>
-              </div>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                {location.headline}
-              </p>
-              <Link href={`/locations/${location.slug}`}>
-                <Button variant="outline" className="w-full">
-                  View Cars & Details
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div className="text-center bg-white rounded-2xl p-6 shadow-sm">
+              <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">15+</div>
+              <div className="text-sm text-gray-600">Prime Locations</div>
+            </div>
+            <div className="text-center bg-white rounded-2xl p-6 shadow-sm">
+              <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">500+</div>
+              <div className="text-sm text-gray-600">Properties Available</div>
+            </div>
+            <div className="text-center bg-white rounded-2xl p-6 shadow-sm">
+              <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">₹2Cr+</div>
+              <div className="text-sm text-gray-600">Average Property Value</div>
+            </div>
+            <div className="text-center bg-white rounded-2xl p-6 shadow-sm">
+              <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">10+</div>
+              <div className="text-sm text-gray-600">Years Experience</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Locations Grid */}
+      <section className="py-16">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {locations.map((location) => (
+              <Card key={location.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white border-0">
+                <CardContent className="p-8">
+                  <div className="mb-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
+                        <Building2 className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <h2 className="text-xl font-bold text-gray-900">{location.name}</h2>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    {location.headline}
+                  </p>
+                  <Link href={`/locations/${location.slug}`}>
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                      View Properties & Details
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Services Section */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 relative inline-block after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-red-600">
-          Our Services
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-          <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
-            <div className="p-6">
-              <div className="flex items-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-                <h3 className="text-xl font-semibold ml-3">Airport Transfer</h3>
-              </div>
-              <p className="text-gray-600">Convenient and reliable airport pickup and drop-off services. Start your vacation the moment you land with our comfortable vehicles.</p>
-            </div>
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              Our Mumbai Real Estate Services
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Comprehensive property services across all Mumbai locations with expert guidance and support.
+            </p>
           </div>
           
-          <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
-            <div className="p-6">
-              <div className="flex items-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
-                <h3 className="text-xl font-semibold ml-3">Pick and Drop</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-gray-50 rounded-2xl p-8 text-center hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Building2 className="h-8 w-8 text-blue-600" />
               </div>
-              <p className="text-gray-600">Flexible pick-up and drop-off services at your convenience. We'll meet you at your hotel, resort, or any location of your choice.</p>
+              <h3 className="text-xl font-bold mb-4 text-gray-900">Property Search</h3>
+              <p className="text-gray-600">
+                Expert property search across all Mumbai locations with personalized recommendations based on your requirements and budget.
+              </p>
             </div>
-          </div>
-          
-          <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
-            <div className="p-6">
-              <div className="flex items-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h3 className="text-xl font-semibold ml-3">24/7 Availability</h3>
+            
+            <div className="bg-gray-50 rounded-2xl p-8 text-center hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <TrendingUp className="h-8 w-8 text-green-600" />
               </div>
-              <p className="text-gray-600">Our services are available round the clock. Whether it's an early morning flight or a late-night arrival, we've got you covered.</p>
+              <h3 className="text-xl font-bold mb-4 text-gray-900">Market Analysis</h3>
+              <p className="text-gray-600">
+                Detailed market analysis and pricing insights for each Mumbai location to help you make informed investment decisions.
+              </p>
+            </div>
+            
+            <div className="bg-gray-50 rounded-2xl p-8 text-center hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Users className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900">Expert Consultation</h3>
+              <p className="text-gray-600">
+                24/7 expert consultation and support throughout your property journey from search to final documentation.
+              </p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
       
-      <div className="mt-12 bg-gray-50 p-6 rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">Why Choose ZoiCarRentals in Goa?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="text-xl font-semibold mb-2">Convenient Locations</h3>
-            <p className="text-gray-600">
-              Our strategically located rental points across Goa make it easy to pick up and drop off your rental car. Whether you're arriving at Dabolim Airport, Mopa Airport, or staying in popular tourist areas like Calangute or Panjim, we've got you covered.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-2">Flexible Rental Options</h3>
-            <p className="text-gray-600">
-              Choose from our wide range of vehicles, from economical hatchbacks to premium SUVs. Our flexible rental periods and competitive rates ensure you get the best value for your money.
-            </p>
+      {/* Why Choose Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center">
+              Why Choose Dream House Properties for Mumbai Real Estate?
+            </h2>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-white rounded-2xl p-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Local Mumbai Expertise</h3>
+                <p className="text-gray-600 mb-4">
+                  Our deep knowledge of Mumbai's neighborhoods helps you choose the right location based on connectivity, 
+                  amenities, future development plans, and investment potential.
+                </p>
+                <ul className="space-y-2 text-gray-600">
+                  <li>• 10+ years of Mumbai real estate experience</li>
+                  <li>• Detailed knowledge of each neighborhood</li>
+                  <li>• Understanding of infrastructure developments</li>
+                  <li>• Network of local contacts and resources</li>
+                </ul>
+              </div>
+              
+              <div className="bg-white rounded-2xl p-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Comprehensive Location Services</h3>
+                <p className="text-gray-600 mb-4">
+                  From property search to legal documentation, we provide end-to-end services across all Mumbai locations 
+                  with transparent processes and expert guidance.
+                </p>
+                <ul className="space-y-2 text-gray-600">
+                  <li>• RERA verified properties in all locations</li>
+                  <li>• Complete legal assistance and documentation</li>
+                  <li>• Home loan assistance and investment advice</li>
+                  <li>• Post-purchase support and property management</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

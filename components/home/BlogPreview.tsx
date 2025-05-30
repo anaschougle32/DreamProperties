@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, BookOpen, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BlogCard from "@/components/blog/BlogCard";
 import { getBlogs } from "@/lib/blogs";
@@ -12,39 +12,45 @@ import { useEffect, useState } from "react";
 const fallbackBlogs: BlogPost[] = [
   {
     id: "fallback-1",
-    title: "10 Hidden Beaches in Goa You Can Only Reach With a Car",
-    slug: "hidden-beaches-in-goa",
-    description: "Discover secluded beaches in Goa that are away from the tourist crowds.",
-    content: "# 10 Hidden Beaches in Goa\n\nGoa is famous for its beautiful beaches...",
-    cover_image: "https://images.pexels.com/photos/1174732/pexels-photo-1174732.jpeg",
-    date: "2023-04-15",
-    created_at: "2023-04-15T10:30:00Z",
-    author: "Priya Nayak",
-    category: "Travel"
+    title: "Mumbai Real Estate Market Analysis 2024: Investment Opportunities in Prime Locations",
+    slug: "mumbai-real-estate-market-analysis-2024",
+    description: "Comprehensive analysis of Mumbai's property market trends, price movements, and investment hotspots in Bandra, Juhu, Powai, and other prime areas.",
+    content: "# Mumbai Real Estate Market Analysis 2024\n\nMumbai's real estate market continues to show strong growth...",
+    cover_image: "/images/blog/mumbai-market-analysis.jpg",
+    date: "2024-01-15",
+    created_at: "2024-01-15T10:30:00Z",
+    author: "Rajesh Sharma",
+    category: "Market Analysis",
+    reading_time: 8,
+    views: 1250
   },
   {
     id: "fallback-2",
-    title: "The Complete Guide to Driving in Goa",
-    slug: "guide-to-driving-in-goa",
-    description: "Everything you need to know about road rules and navigation in Goa.",
-    content: "# The Complete Guide to Driving in Goa\n\nExploring Goa with your own vehicle...",
-    cover_image: "https://images.pexels.com/photos/7876379/pexels-photo-7876379.jpeg",
-    date: "2023-07-05",
-    created_at: "2023-07-05T14:15:00Z",
-    author: "Anjali Menon",
-    category: "Travel Tips"
+    title: "Complete Guide to Buying Your First Property in Mumbai: Legal Process & Documentation",
+    slug: "first-property-buying-guide-mumbai",
+    description: "Step-by-step guide for first-time property buyers in Mumbai covering RERA compliance, legal documentation, home loans, and registration process.",
+    content: "# Complete Guide to Buying Your First Property in Mumbai\n\nBuying your first property in Mumbai can be overwhelming...",
+    cover_image: "/images/blog/property-buying-guide.jpg",
+    date: "2024-01-10",
+    created_at: "2024-01-10T14:15:00Z",
+    author: "Priya Patel",
+    category: "Buying Guide",
+    reading_time: 12,
+    views: 2100
   },
   {
     id: "fallback-3",
-    title: "5 Scenic Drives in Goa You Shouldn't Miss",
-    slug: "scenic-drives-in-goa",
-    description: "Explore the most beautiful routes for a road trip in Goa.",
-    content: "# 5 Scenic Drives in Goa\n\nWith its winding coastal roads and lush landscapes...",
-    cover_image: "https://images.pexels.com/photos/1252500/pexels-photo-1252500.jpeg",
-    date: "2023-08-12",
-    created_at: "2023-08-12T09:45:00Z",
-    author: "Rahul Sharma",
-    category: "Travel"
+    title: "Bandra West vs Juhu vs Powai: Which Mumbai Location Offers Best ROI for Property Investment?",
+    slug: "mumbai-location-comparison-roi-analysis",
+    description: "Detailed comparison of Mumbai's top residential areas - Bandra West, Juhu, and Powai - analyzing investment potential, amenities, and future growth prospects.",
+    content: "# Bandra West vs Juhu vs Powai: ROI Analysis\n\nChoosing the right location is crucial for property investment success...",
+    cover_image: "/images/blog/location-comparison.jpg",
+    date: "2024-01-05",
+    created_at: "2024-01-05T09:45:00Z",
+    author: "Amit Malhotra",
+    category: "Investment",
+    reading_time: 10,
+    views: 1800
   }
 ];
 

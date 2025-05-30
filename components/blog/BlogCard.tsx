@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { CalendarDays } from "lucide-react";
@@ -6,12 +8,15 @@ import type { BlogPost } from "@/types/blog";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface BlogCardProps {
   post: BlogPost | null | undefined;
 }
 
 const BlogCard = ({ post }: BlogCardProps) => {
+  const [imageError, setImageError] = useState(false);
+
   // Handle loading/error state with skeleton
   if (!post) {
     return (
@@ -29,7 +34,7 @@ const BlogCard = ({ post }: BlogCardProps) => {
   // Safely extract post data with fallbacks
   const { 
     created_at, 
-    category = 'Travel', 
+    category = 'Real Estate', 
     excerpt = '', 
     title = 'Untitled Post', 
     slug = '', 
@@ -42,7 +47,7 @@ const BlogCard = ({ post }: BlogCardProps) => {
     : 'Recently';
     
   const description = excerpt;
-  const coverImage = cover_image;
+  const coverImage = imageError ? '/images/blog-placeholder.jpg' : (cover_image || '/images/blog-placeholder.jpg');
 
   return (
     <Card className="overflow-hidden h-full flex flex-col hover:shadow-lg transition-shadow">
@@ -53,11 +58,7 @@ const BlogCard = ({ post }: BlogCardProps) => {
           fill
           className="object-cover transition-transform duration-500 hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-            // Fallback to placeholder if image fails to load
-            const target = e.target as HTMLImageElement;
-            target.src = '/images/blog-placeholder.jpg';
-          }}
+          onError={() => setImageError(true)}
         />
         {category && (
           <span className="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 text-xs rounded-full">

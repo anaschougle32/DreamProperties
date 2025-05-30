@@ -192,7 +192,10 @@ export default async function CarPage({ params }: Props) {
               Self Drive {car.category} | {car.fuel_type} | {car.transmission} | ₹{car.price_per_day}/day
             </p>
             
-            <CarGallery main_image={car.main_image} alt={`${car.brand} ${car.name} Car Rental in Goa`} />
+            <CarGallery 
+              images={car.main_image ? [car.main_image] : ["/images/car-placeholder.jpg"]} 
+              carName={`${car.brand} ${car.name}`} 
+            />
             
             <Separator className="my-8" />
             

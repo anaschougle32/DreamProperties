@@ -1,117 +1,142 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { Car } from "@/lib/types";
-import { Star, Fuel, Settings, Phone, MessageCircle, Gauge } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import PlaceholderImage from "@/components/ui/placeholder-image";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { Car } from "@/lib/types";
+import { Fuel, Users, Settings, Star, Heart, Phone, MessageCircle } from "lucide-react";
 
 interface CarCardProps {
   car: Car;
   showCategory?: boolean;
 }
 
-const CarCard = ({ car, showCategory = false }: CarCardProps) => {
-  // State to track if image has error
+export default function CarCard({ car, showCategory = false }: CarCardProps) {
   const [hasImageError, setHasImageError] = useState(false);
-  
-  // Create WhatsApp message with car details
-  const whatsappMessage = encodeURIComponent(`Hi, I'm interested in renting the ${car.brand} ${car.name}. Could you provide more information?`);
-  const whatsappLink = `https://wa.me/917977288350?text=${whatsappMessage}`;
-  
+  const [isLiked, setIsLiked] = useState(false);
+
+  const formatPrice = (price: number) => {
+    return `₹${price.toLocaleString()}/day`;
+  };
+
+  const imageSrc = hasImageError ? "/images/car-placeholder.jpg" : (car.main_image || "/images/car-placeholder.jpg");
+
   return (
-    <Card className="overflow-hidden group h-full flex flex-col transition-all hover:shadow-lg">
-      <div className="relative h-48 overflow-hidden">
-        {car.main_image && !hasImageError ? (
-          <div className="relative w-full h-full">
-            <Image
-              src={car.main_image}
-              alt={`${car.brand} ${car.name}`}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              onError={() => setHasImageError(true)}
-            />
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <Image
+          src={imageSrc}
+          alt={car.name}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          onError={() => setHasImageError(true)}
+        />
+        
+        {/* Category Badge */}
+        {showCategory && car.category && (
+          <div className="absolute top-3 left-3">
+            <Badge className="bg-blue-600 text-white">
+              {car.category}
+            </Badge>
           </div>
-        ) : (
-          <PlaceholderImage text={`${car.brand} ${car.name}`} />
         )}
         
-        {showCategory && (
-          <span className="absolute top-3 right-3 bg-blue-600 text-white px-3 py-1 text-xs rounded-full z-10">
-            {car.category}
+        {/* Heart Icon */}
+        <button
+          onClick={() => setIsLiked(!isLiked)}
+          className="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors"
+        >
+          <Heart className={`w-4 h-4 ${isLiked ? 'text-red-500 fill-current' : 'text-gray-600'}`} />
+        </button>
+        
+        {/* Price Badge */}
+        <div className="absolute bottom-3 left-3">
+          <span className="bg-white/95 backdrop-blur-sm text-gray-900 px-2 py-1 rounded-lg text-sm font-semibold shadow-sm">
+            {formatPrice(car.price_per_day)}
           </span>
-        )}
+        </div>
       </div>
       
-      <CardContent className="flex-1 pt-6">
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <p className="text-sm text-gray-500 font-medium mb-1">{car.brand}</p>
-            <h3 className="font-bold text-lg">{car.name}</h3>
-          </div>
-          <div className="flex items-center text-amber-500">
-            <Star size={16} fill="currentColor" className="mr-1" />
-            <span className="text-sm">4.8</span>
-          </div>
+      <CardContent className="p-4">
+        <div className="mb-3">
+          <h3 className="font-semibold text-lg text-gray-900 group-hover:text-blue-600 transition-colors">
+            <Link href={`/cars/${car.slug}`}>
+              {car.brand} {car.name}
+            </Link>
+          </h3>
+          {car.description && (
+            <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+              {car.description}
+            </p>
+          )}
         </div>
         
-        <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2">
-          {car.description?.split('.')[0] || `Experience the ${car.name} for your next adventure.`}
-        </p>
-        
-        <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
-          <div className="flex items-center">
-            <Fuel size={16} className="mr-1 text-blue-600" />
-            <span>{car.fuel_type}</span>
+        {/* Car Features */}
+        <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+          <div className="flex items-center gap-1">
+            <Fuel className="w-4 h-4" />
+            <span className="capitalize">{car.fuel_type}</span>
           </div>
-          <div className="flex items-center">
-            <Settings size={16} className="mr-1 text-blue-600" />
-            <span>{car.transmission}</span>
+          <div className="flex items-center gap-1">
+            <Settings className="w-4 h-4" />
+            <span className="capitalize">{car.transmission}</span>
           </div>
           {car.mileage && (
-            <div className="flex items-center">
-              <Gauge size={16} className="mr-1 text-blue-600" />
+            <div className="flex items-center gap-1">
               <span>{car.mileage} km/l</span>
             </div>
           )}
         </div>
-      </CardContent>
-      
-      <CardFooter className="pt-0">
-        <div className="w-full">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <p className="text-sm text-gray-500">Price per day</p>
-              <p className="text-xl font-bold">₹{car.price_per_day}</p>
-            </div>
+        
+        {/* Features */}
+        {car.features && car.features.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-4">
+            {car.features.slice(0, 3).map((feature, index) => (
+              <Badge key={index} variant="secondary" className="text-xs">
+                {feature.name}
+              </Badge>
+            ))}
+            {car.features.length > 3 && (
+              <Badge variant="secondary" className="text-xs">
+                +{car.features.length - 3} more
+              </Badge>
+            )}
+          </div>
+        )}
+        
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <Button asChild className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
             <Link href={`/cars/${car.slug}`}>
-              <Button variant="outline">View Details</Button>
+              View Details
             </Link>
-          </div>
-          
-          <div className="flex gap-2">
-            <Button variant="outline" className="flex-1" asChild>
-              <a href={`tel:+919082888912`}>
-                <Phone size={16} className="mr-2" />
-                Call
-              </a>
-            </Button>
-            <Button variant="outline" className="flex-1" asChild>
-              <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                <MessageCircle size={16} className="mr-2" />
-                WhatsApp
-              </a>
-            </Button>
-          </div>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="px-3"
+            asChild
+          >
+            <Link href="tel:+918888888888">
+              <Phone className="w-4 h-4" />
+            </Link>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="px-3 bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+            asChild
+          >
+            <Link href="https://wa.me/918888888888" target="_blank">
+              <MessageCircle className="w-4 h-4" />
+            </Link>
+          </Button>
         </div>
-      </CardFooter>
+      </CardContent>
     </Card>
   );
-};
-
-export default CarCard;
+}

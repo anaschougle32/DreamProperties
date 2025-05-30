@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
-import { Search, MapPin, Home, TrendingUp, Users, Award, Star, Play, ArrowRight, Building2, Key, Shield } from 'lucide-react';
+import { Search, MapPin, Home, TrendingUp, Users, Award, Star, Play, ArrowRight, Building2, Key, Shield, Bed, Bath, Square, Heart, Phone, MessageCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 const PROPERTY_TYPES = ['Apartment', 'Villa', 'Independent House', 'Duplex', 'Penthouse'];
-const LOCATIONS = ['Bandra West', 'Juhu', 'Powai', 'Andheri West', 'Lower Parel', 'Worli'];
+const LOCATIONS = ['Bandra West', 'Juhu', 'Powai', 'Andheri West', 'Lower Parel', 'Worli', 'Malad West', 'Thane West'];
 const PRICE_RANGES = [
   { label: 'Under ₹1Cr', value: '0-10000000' },
   { label: '₹1Cr - ₹3Cr', value: '10000000-30000000' },
@@ -19,11 +19,14 @@ const PRICE_RANGES = [
   { label: 'Above ₹10Cr', value: '100000000-999999999' },
 ];
 
+const BEDROOMS = ['1 BHK', '2 BHK', '3 BHK', '4 BHK', '5+ BHK'];
+
 export default function Hero() {
   const [searchData, setSearchData] = useState({
     location: '',
     propertyType: '',
     priceRange: '',
+    bedrooms: '',
     listingType: 'sale'
   });
 
@@ -31,6 +34,7 @@ export default function Hero() {
     const params = new URLSearchParams();
     if (searchData.location) params.set('location', searchData.location);
     if (searchData.propertyType) params.set('property_type', searchData.propertyType);
+    if (searchData.bedrooms) params.set('bedrooms', searchData.bedrooms.split(' ')[0]);
     if (searchData.priceRange) {
       const [min, max] = searchData.priceRange.split('-');
       params.set('min_price', min);
@@ -44,35 +48,66 @@ export default function Hero() {
   return (
     <>
       {/* Main Hero Section */}
-      <section className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+      <section className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0">
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-transparent to-indigo-600/5" />
+          
+          {/* Geometric Shapes */}
+          <div className="absolute top-20 right-20 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-20 left-20 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 opacity-[0.02]" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M0 0h40v40H0V0zm20 20h20v20H20V20z'/%3E%3C/g%3E%3C/svg%3E")`,
           }} />
         </div>
 
-        <div className="container mx-auto px-4 pt-20 pb-16 lg:pt-32 lg:pb-24">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="container mx-auto px-4 pt-24 pb-20 lg:pt-32 lg:pb-28 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
             
             {/* Left Content */}
-            <div className="space-y-8 animate-fade-in">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
-                <Star className="w-4 h-4 fill-current" />
-                <span>Trusted by 1000+ Happy Families</span>
+            <div className="space-y-10 animate-fade-in">
+              {/* Trust Badge */}
+              <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-700 px-6 py-3 rounded-full text-sm font-medium shadow-sm">
+                <div className="flex items-center gap-1">
+                  {[1,2,3,4,5].map((i) => (
+                    <Star key={i} className="w-3 h-3 fill-current text-yellow-500" />
+                  ))}
+                </div>
+                <span>Rated 4.9/5 by 1000+ Happy Families</span>
               </div>
 
               {/* Main Heading */}
               <div className="space-y-6">
-                <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 leading-tight">
-                  Designing Your
-                  <span className="block text-blue-600">Next Chapter.</span>
+                <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 leading-[1.1]">
+                  Find Your Perfect
+                  <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    Dream Home
+                  </span>
+                  <span className="block text-gray-700 text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+                    in Mumbai
+                  </span>
                 </h1>
-                <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-lg">
-                  Where Dreams Become Apartments. Transforming Visions into 
-                  Vibrant Living Spaces in Mumbai's most sought-after locations.
+                <p className="text-xl md:text-2xl text-gray-600 leading-relaxed max-w-2xl">
+                  Discover premium apartments, luxury villas, and independent houses 
+                  in Mumbai's most prestigious neighborhoods. Your dream property awaits.
                 </p>
+              </div>
+
+              {/* Key Features */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {[
+                  { icon: Shield, text: 'RERA Verified', color: 'text-green-600' },
+                  { icon: Award, text: '10+ Years Experience', color: 'text-blue-600' },
+                  { icon: Users, text: '1000+ Happy Clients', color: 'text-purple-600' },
+                ].map((feature, index) => (
+                  <div key={index} className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                    <feature.icon className={`w-5 h-5 ${feature.color}`} />
+                    <span>{feature.text}</span>
+                  </div>
+                ))}
               </div>
 
               {/* CTA Buttons */}
@@ -80,118 +115,146 @@ export default function Hero() {
                 <Button 
                   asChild
                   size="lg" 
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                 >
                   <Link href="/properties" className="flex items-center gap-2">
-                    Explore Projects
+                    <Building2 className="w-5 h-5" />
+                    Explore Properties
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                 </Button>
                 <Button 
+                  asChild
                   variant="outline" 
                   size="lg" 
-                  className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4 text-lg font-medium rounded-xl flex items-center gap-2"
+                  className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4 text-lg font-semibold rounded-2xl flex items-center gap-2 transition-all duration-300"
                 >
-                  <Play className="w-5 h-5" />
-                  Our Process
+                  <Link href="tel:+919082888912">
+                    <Phone className="w-5 h-5" />
+                    Call Expert
+                  </Link>
                 </Button>
               </div>
 
-              {/* Trust Indicators */}
-              <div className="flex items-center gap-8 pt-4">
-                <div className="flex items-center gap-2">
+              {/* Quick Contact */}
+              <div className="flex items-center gap-6 pt-2">
+                <div className="flex items-center gap-3">
                   <div className="flex -space-x-2">
                     {[1,2,3,4].map((i) => (
-                      <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 border-2 border-white" />
+                      <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-indigo-500 border-2 border-white shadow-sm" />
                     ))}
                   </div>
                   <div className="text-sm">
-                    <div className="font-semibold text-gray-900">50k+ Happy Clients</div>
-                    <div className="flex items-center gap-1 text-yellow-500">
-                      {[1,2,3,4,5].map((i) => (
-                        <Star key={i} className="w-3 h-3 fill-current" />
-                      ))}
-                      <span className="text-gray-600 ml-1">4.8/5</span>
-                    </div>
+                    <div className="font-semibold text-gray-900">Join 1000+ Satisfied Customers</div>
+                    <div className="text-gray-600">Who found their dream homes with us</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Right Content - Property Showcase */}
+            {/* Right Content - Enhanced Property Showcase */}
             <div className="relative animate-slide-in-right">
               {/* Main Property Card */}
               <div className="relative">
-                <Card className="overflow-hidden shadow-2xl rounded-3xl bg-white">
+                <Card className="overflow-hidden shadow-2xl rounded-3xl bg-white border-0">
                   <div className="aspect-[4/3] relative">
                     <Image
                       src="/images/hero-property.jpg"
-                      alt="Luxury apartment in Mumbai"
+                      alt="Luxury 3BHK Sea View Apartment in Bandra West Mumbai"
                       fill
                       className="object-cover"
                       placeholder="blur"
                       blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                     />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    
+                    {/* Property Badges */}
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
                         Sea View
                       </span>
+                      <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
+                        Premium
+                      </span>
                     </div>
-                    <div className="absolute top-4 right-4">
-                      <span className="bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-medium">
-                        ₹4.5Cr
+                    
+                    {/* Heart Icon */}
+                    <button className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:bg-white transition-colors">
+                      <Heart className="w-5 h-5 text-gray-600 hover:text-red-500" />
+                    </button>
+                    
+                    {/* Price Badge */}
+                    <div className="absolute bottom-4 right-4">
+                      <span className="bg-white/95 backdrop-blur-sm text-gray-900 px-4 py-2 rounded-xl text-lg font-bold shadow-sm">
+                        ₹4.5 Cr
                       </span>
                     </div>
                   </div>
+                  
                   <div className="p-6">
-                    <h3 className="font-heading text-xl font-bold text-gray-900 mb-2">Luxury Apartment Bandra</h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
+                      <MapPin className="w-4 h-4" />
+                      <span>Bandra West, Mumbai</span>
+                      <span className="ml-auto bg-blue-50 text-blue-700 px-2 py-1 rounded-md text-xs font-medium">
+                        For Sale
+                      </span>
+                    </div>
+                    
+                    <h3 className="font-heading text-xl font-bold text-gray-900 mb-3">
+                      Luxury 3BHK Sea View Apartment
+                    </h3>
+                    
                     <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
                       <span className="flex items-center gap-1">
-                        <Building2 className="w-4 h-4" />
+                        <Bed className="w-4 h-4" />
                         3 Beds
                       </span>
                       <span className="flex items-center gap-1">
-                        <Home className="w-4 h-4" />
-                        3 Bath
+                        <Bath className="w-4 h-4" />
+                        3 Baths
                       </span>
                       <span className="flex items-center gap-1">
-                        <TrendingUp className="w-4 h-4" />
+                        <Square className="w-4 h-4" />
                         1,800 sqft
                       </span>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-gray-900">₹4.5 Crore</span>
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+                    
+                    <div className="flex gap-3">
+                      <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl">
                         View Details
+                      </Button>
+                      <Button variant="outline" className="px-4 rounded-xl">
+                        <Phone className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>
                 </Card>
 
                 {/* Floating Property Cards */}
-                <div className="absolute -top-8 -right-8 hidden lg:block animate-float">
-                  <Card className="p-4 bg-white shadow-lg rounded-2xl w-48">
+                <div className="absolute -top-6 -right-6 hidden xl:block animate-float">
+                  <Card className="p-4 bg-white shadow-xl rounded-2xl w-56 border-0">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
                         <Home className="w-6 h-6 text-blue-600" />
                       </div>
                       <div>
                         <div className="font-semibold text-gray-900">Juhu Beach Villa</div>
                         <div className="text-sm text-gray-600">₹3.5 Crore</div>
+                        <div className="text-xs text-green-600 font-medium">Available</div>
                       </div>
                     </div>
                   </Card>
                 </div>
 
-                <div className="absolute -bottom-8 -left-8 hidden lg:block animate-float" style={{ animationDelay: '1s' }}>
-                  <Card className="p-4 bg-white shadow-lg rounded-2xl w-48">
+                <div className="absolute -bottom-6 -left-6 hidden xl:block animate-float" style={{ animationDelay: '1s' }}>
+                  <Card className="p-4 bg-white shadow-xl rounded-2xl w-56 border-0">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-100 to-emerald-100 rounded-xl flex items-center justify-center">
                         <Building2 className="w-6 h-6 text-green-600" />
                       </div>
                       <div>
                         <div className="font-semibold text-gray-900">Powai Apartment</div>
                         <div className="text-sm text-gray-600">₹5.5 Crore</div>
+                        <div className="text-xs text-blue-600 font-medium">New Launch</div>
                       </div>
                     </div>
                   </Card>
@@ -202,50 +265,50 @@ export default function Hero() {
         </div>
       </section>
 
-      {/* Search Section */}
-      <section className="relative -mt-16 z-10">
+      {/* Enhanced Property Search Section */}
+      <section className="relative -mt-20 z-20 pb-16">
         <div className="container mx-auto px-4">
-          <Card className="p-6 md:p-8 bg-white shadow-2xl rounded-3xl border-0 max-w-5xl mx-auto">
+          <Card className="p-8 md:p-10 bg-white shadow-2xl rounded-3xl border-0 max-w-6xl mx-auto backdrop-blur-sm">
             <div className="text-center mb-8">
-              <h2 className="font-heading text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-                Find Your Dream Property
+              <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                Find Your Perfect Property in Mumbai
               </h2>
-              <p className="text-gray-600 text-lg">
-                At The Best Price in Mumbai
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Search from 500+ verified properties in Mumbai's prime locations with expert guidance
               </p>
             </div>
 
             {/* Listing Type Toggle */}
-            <div className="flex bg-gray-100 rounded-2xl p-1 mb-8 max-w-xs mx-auto">
+            <div className="flex bg-gray-100 rounded-2xl p-1 mb-8 max-w-sm mx-auto">
               <button
                 onClick={() => setSearchData(prev => ({ ...prev, listingType: 'sale' }))}
-                className={`flex-1 py-3 px-6 rounded-xl font-medium transition-all ${
+                className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all ${
                   searchData.listingType === 'sale'
                     ? 'bg-white text-blue-600 shadow-sm'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                Buy
+                Buy Property
               </button>
               <button
                 onClick={() => setSearchData(prev => ({ ...prev, listingType: 'rent' }))}
-                className={`flex-1 py-3 px-6 rounded-xl font-medium transition-all ${
+                className={`flex-1 py-3 px-6 rounded-xl font-semibold transition-all ${
                   searchData.listingType === 'rent'
                     ? 'bg-white text-blue-600 shadow-sm'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
               >
-                Rent
+                Rent Property
               </button>
             </div>
 
-            {/* Search Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {/* Enhanced Search Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
               <Select onValueChange={(value) => setSearchData(prev => ({ ...prev, location: value }))}>
-                <SelectTrigger className="h-14 rounded-xl border-gray-200 focus:border-blue-500">
+                <SelectTrigger className="h-14 rounded-xl border-gray-200 focus:border-blue-500 bg-gray-50 hover:bg-white transition-colors">
                   <div className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-gray-400" />
-                    <SelectValue placeholder="Location" />
+                    <MapPin className="w-5 h-5 text-blue-500" />
+                    <SelectValue placeholder="Select Location" />
                   </div>
                 </SelectTrigger>
                 <SelectContent>
@@ -258,9 +321,9 @@ export default function Hero() {
               </Select>
 
               <Select onValueChange={(value) => setSearchData(prev => ({ ...prev, propertyType: value }))}>
-                <SelectTrigger className="h-14 rounded-xl border-gray-200 focus:border-blue-500">
+                <SelectTrigger className="h-14 rounded-xl border-gray-200 focus:border-blue-500 bg-gray-50 hover:bg-white transition-colors">
                   <div className="flex items-center gap-3">
-                    <Home className="w-5 h-5 text-gray-400" />
+                    <Home className="w-5 h-5 text-blue-500" />
                     <SelectValue placeholder="Property Type" />
                   </div>
                 </SelectTrigger>
@@ -273,10 +336,26 @@ export default function Hero() {
                 </SelectContent>
               </Select>
 
-              <Select onValueChange={(value) => setSearchData(prev => ({ ...prev, priceRange: value }))}>
-                <SelectTrigger className="h-14 rounded-xl border-gray-200 focus:border-blue-500">
+              <Select onValueChange={(value) => setSearchData(prev => ({ ...prev, bedrooms: value }))}>
+                <SelectTrigger className="h-14 rounded-xl border-gray-200 focus:border-blue-500 bg-gray-50 hover:bg-white transition-colors">
                   <div className="flex items-center gap-3">
-                    <TrendingUp className="w-5 h-5 text-gray-400" />
+                    <Bed className="w-5 h-5 text-blue-500" />
+                    <SelectValue placeholder="Bedrooms" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  {BEDROOMS.map((bedroom) => (
+                    <SelectItem key={bedroom} value={bedroom}>
+                      {bedroom}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select onValueChange={(value) => setSearchData(prev => ({ ...prev, priceRange: value }))}>
+                <SelectTrigger className="h-14 rounded-xl border-gray-200 focus:border-blue-500 bg-gray-50 hover:bg-white transition-colors">
+                  <div className="flex items-center gap-3">
+                    <TrendingUp className="w-5 h-5 text-blue-500" />
                     <SelectValue placeholder="Price Range" />
                   </div>
                 </SelectTrigger>
@@ -291,98 +370,55 @@ export default function Hero() {
 
               <Button 
                 onClick={handleSearch}
-                className="h-14 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                 size="lg"
               >
                 <Search className="w-5 h-5 mr-2" />
-                Search
+                Search Properties
               </Button>
             </div>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-gray-100">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-gray-100">
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-gray-900">500+</div>
-                <div className="text-sm text-gray-600">Properties Available</div>
+                <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">500+</div>
+                <div className="text-sm text-gray-600">Verified Properties</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-gray-900">1000+</div>
+                <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">1000+</div>
                 <div className="text-sm text-gray-600">Happy Families</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-gray-900">10+</div>
+                <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">10+</div>
                 <div className="text-sm text-gray-600">Years Experience</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-gray-900">100%</div>
-                <div className="text-sm text-gray-600">Customer Satisfaction</div>
+                <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">₹100Cr+</div>
+                <div className="text-sm text-gray-600">Properties Sold</div>
+              </div>
+            </div>
+
+            {/* Contact Options */}
+            <div className="flex flex-col sm:flex-row gap-4 mt-8 pt-6 border-t border-gray-100">
+              <div className="flex-1 text-center">
+                <p className="text-gray-600 mb-3">Need help finding the perfect property?</p>
+                <div className="flex gap-3 justify-center">
+                  <Button asChild variant="outline" className="rounded-xl">
+                    <Link href="tel:+919082888912" className="flex items-center gap-2">
+                      <Phone className="w-4 h-4" />
+                      Call Expert
+                    </Link>
+                  </Button>
+                  <Button asChild className="bg-green-600 hover:bg-green-700 rounded-xl">
+                    <Link href="https://wa.me/917977288350?text=Hi,%20I'm%20interested%20in%20property%20inquiry." target="_blank" className="flex items-center gap-2">
+                      <MessageCircle className="w-4 h-4" />
+                      WhatsApp
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Find Your Dream Property
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              We support our clients at every stage of the buying and selling process, ensuring 
-              a seamless and stress-free experience from start to finish.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors">
-                <Key className="w-8 h-8 text-blue-600" />
-              </div>
-              <h3 className="font-heading text-xl font-bold text-gray-900 mb-2">Property Valuation</h3>
-              <p className="text-gray-600">
-                Accurate assessments to determine the true value of your favourite 
-                property in Mumbai's prime locations.
-              </p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
-                <Shield className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="font-heading text-xl font-bold text-gray-900 mb-2">Legal Assistance</h3>
-              <p className="text-gray-600">
-                Helping clients navigate the complexities of legal paperwork to 
-                ensure a smooth transaction in Maharashtra.
-              </p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-200 transition-colors">
-                <TrendingUp className="w-8 h-8 text-purple-600" />
-              </div>
-              <h3 className="font-heading text-xl font-bold text-gray-900 mb-2">Market Expertise</h3>
-              <p className="text-gray-600">
-                Deep understanding of Mumbai real estate market trends and 
-                expert negotiation strategies.
-              </p>
-            </div>
-          </div>
-
-          <div className="text-center mt-12">
-            <Button 
-              asChild
-              variant="outline" 
-              size="lg" 
-              className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-4 text-lg font-medium rounded-xl transition-all duration-300"
-            >
-              <Link href="/about" className="flex items-center gap-2">
-                Learn More
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </Button>
-          </div>
         </div>
       </section>
     </>

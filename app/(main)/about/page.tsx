@@ -1,37 +1,105 @@
 import { Metadata } from "next";
 import Image from "next/image";
-import { Check, Users, Award, Clock } from "lucide-react";
+import { Check, Users, Award, Clock, Shield, TrendingUp, Building2, MapPin, Star, Home, Phone, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "About ZoiCarRentals | Leading Car Rental Service in Goa Since 2018",
-  description: "Learn about ZoiCarRentals, Goa's premier car rental service. Discover our story, mission, and commitment to providing exceptional rental experiences across North and South Goa.",
-  keywords: "car rental Goa, about ZoiCarRentals, car hire company Goa, best car rental service Goa, ZoiCarRentals history, car rental team Goa, reliable car rental Goa",
+  title: "About Dream House Properties | Mumbai's Leading Real Estate Company Since 2014",
+  description: "Learn about Dream House Properties, Mumbai's premier real estate service. Discover our story, mission, and commitment to providing exceptional property buying and selling experiences across Mumbai's prime locations including Bandra, Juhu, Powai, and Andheri.",
+  keywords: "about Dream House Properties, Mumbai real estate company, property dealers Mumbai, real estate agents Mumbai, Bandra property dealers, Juhu real estate, Powai property consultants, Mumbai property experts, RERA registered agents, luxury property Mumbai, real estate services Mumbai",
   openGraph: {
-    title: "About ZoiCarRentals | Leading Car Rental Service in Goa",
-    description: "Discover the story behind Goa's most trusted car rental service. Learn about our mission, values, and the team that makes your perfect Goa trip possible.",
-    url: "https://zoicarrentals.com/about",
-    siteName: "ZoiCarRentals",
+    title: "About Dream House Properties | Mumbai's Leading Real Estate Company",
+    description: "Discover the story behind Mumbai's most trusted real estate service. Learn about our mission, values, and the team that makes your perfect Mumbai property journey possible.",
+    url: "https://dreamhouseproperties.com/about",
+    siteName: "Dream House Properties",
     locale: "en_IN",
     type: "website",
     images: [{
       url: "/images/about/team-photo.jpg",
       width: 1200,
       height: 630,
-      alt: "ZoiCarRentals Team - Car Rental Experts in Goa"
+      alt: "Dream House Properties Team - Real Estate Experts in Mumbai"
     }]
   },
   twitter: {
     card: "summary_large_image",
-    title: "About ZoiCarRentals | Leading Car Rental Service in Goa",
-    description: "Discover the story behind Goa's most trusted car rental service.",
+    title: "About Dream House Properties | Mumbai's Leading Real Estate Company",
+    description: "Discover the story behind Mumbai's most trusted real estate service.",
     images: ["/images/about/team-photo.jpg"],
   },
   alternates: {
-    canonical: "https://zoicarrentals.com/about",
+    canonical: "https://dreamhouseproperties.com/about",
   },
 };
 
 export default function AboutPage() {
+  const achievements = [
+    { icon: Building2, number: '500+', label: 'Properties Sold', description: 'Successful transactions across Mumbai' },
+    { icon: Users, number: '1000+', label: 'Happy Families', description: 'Satisfied customers who found their dream homes' },
+    { icon: Award, number: '10+', label: 'Years Experience', description: 'Decade of expertise in Mumbai real estate' },
+    { icon: TrendingUp, number: '₹100Cr+', label: 'Property Value', description: 'Total worth of properties handled' },
+  ];
+
+  const values = [
+    {
+      icon: Shield,
+      title: 'RERA Compliance & Legal Safety',
+      description: 'All our Mumbai properties are RERA verified with clear legal documentation. We ensure complete transparency and buyer protection in every transaction.',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50'
+    },
+    {
+      icon: Users,
+      title: 'Customer-Centric Approach',
+      description: 'Our customers satisfaction is our top priority. We provide personalized service to help you find the perfect property in Mumbai\'s prime locations.',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Market Expertise & Analysis',
+      description: 'Deep understanding of Mumbai real estate trends, property valuations, and investment opportunities across Bandra, Juhu, Powai, and other prime areas.',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50'
+    },
+    {
+      icon: Clock,
+      title: '24/7 Support & Reliability',
+      description: 'Round-the-clock customer support throughout your property journey. From initial search to final documentation, we\'re always available.',
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50'
+    }
+  ];
+
+  const whyChooseUs = [
+    {
+      title: 'Local Mumbai Expertise',
+      description: 'As Mumbai locals with 10+ years experience, we provide insider knowledge about neighborhoods, pricing trends, and investment potential in areas like Bandra West, Juhu, and Powai.'
+    },
+    {
+      title: 'End-to-End Property Services',
+      description: 'From property search and site visits to legal documentation and home loan assistance, we handle every aspect of your Mumbai property transaction.'
+    },
+    {
+      title: 'Transparent Pricing & No Hidden Charges',
+      description: 'Clear, upfront pricing with no hidden fees. Our brokerage is competitive and all costs are discussed transparently before any commitment.'
+    },
+    {
+      title: 'Post-Purchase Support',
+      description: 'Our relationship doesn\'t end with the sale. We provide ongoing support for property management, rental assistance, and future investment guidance.'
+    },
+    {
+      title: 'Verified Property Portfolio',
+      description: 'Every property in our Mumbai portfolio is personally verified for legal compliance, amenities, and accurate pricing to ensure you get the best value.'
+    },
+    {
+      title: 'Investment Advisory Services',
+      description: 'Expert guidance on Mumbai real estate investment opportunities, market timing, and portfolio diversification across different property types and locations.'
+    }
+  ];
+
   return (
     <>
       {/* Breadcrumbs for SEO */}
@@ -50,345 +118,222 @@ export default function AboutPage() {
       </nav>
       
       {/* Hero Section */}
-      <section className="relative h-[40vh] min-h-[300px] flex items-center justify-center">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url(https://images.pexels.com/photos/2382696/pexels-photo-2382696.jpeg)",
-          }}
-          role="img"
-          aria-label="ZoiCarRentals fleet of cars in Goa"
-        />
-        <div className="absolute inset-0 bg-black/50" />
-        
-        <div className="relative z-10 container mx-auto px-4 md:px-6 text-center text-white">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">About ZoiCarRentals</h1>
-          <p className="text-xl max-w-3xl mx-auto">
-            Goa's premier car rental service since 2018 | Serving North & South Goa
+      <section className="relative bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-20">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <Building2 className="w-4 h-4" />
+            <span>About Dream House Properties</span>
+          </div>
+          
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 leading-tight">
+            Mumbai's Most Trusted
+            <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              Real Estate Partner
+            </span>
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-8">
+            Serving Mumbai's prime locations since 2014 | Specializing in Bandra, Juhu, Powai, Andheri, Lower Parel & Worli
           </p>
+
+          {/* Trust Indicators */}
+          <div className="flex items-center justify-center gap-8 mb-8">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                {[1,2,3,4,5].map((i) => (
+                  <Star key={i} className="w-4 h-4 fill-current text-yellow-500" />
+                ))}
+              </div>
+              <span className="text-gray-600 font-medium">4.9/5 Rating</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-green-600" />
+              <span className="text-gray-600 font-medium">RERA Registered</span>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            {achievements.map((achievement, index) => {
+              const IconComponent = achievement.icon;
+              return (
+                <Card key={index} className="p-6 text-center border-0 shadow-sm">
+                  <IconComponent className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+                  <div className="text-2xl font-bold text-gray-900 mb-1">{achievement.number}</div>
+                  <div className="text-sm font-medium text-gray-900 mb-1">{achievement.label}</div>
+                  <div className="text-xs text-gray-600">{achievement.description}</div>
+                </Card>
+              );
+            })}
+          </div>
         </div>
       </section>
       
       {/* Our Story */}
-      <section className="py-20 bg-white dark:bg-gray-900" id="our-story">
+      <section className="py-20 bg-white" id="our-story">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-3xl font-bold mb-6">Our Story</h2>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                ZoiCarRentals was founded in 2018 with a simple mission: to provide travelers with the freedom to explore Goa on their own terms. We started with just 5 cars and a passion for service excellence in the beautiful coastal state of Goa.
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">Our Mumbai Real Estate Journey</h2>
+              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                Dream House Properties was founded in 2014 with a simple mission: to help families find their perfect homes in Mumbai's most desirable neighborhoods. We started with deep local knowledge of areas like Bandra West, Juhu, and Powai, understanding that each location has its unique character and investment potential.
               </p>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                As locals who know every corner of Goa, from the bustling beaches of North Goa like Calangute and Anjuna to the serene shores of South Goa such as Palolem and Agonda, we understood that the true beauty of our state often lies off the beaten path, in places not easily accessible by public transport or traditional tours.
+              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                As Mumbai natives who understand every corner of the city, from the bustling commercial districts of Lower Parel and Andheri to the serene coastal areas of Juhu and Bandra, we recognized that finding the right property requires more than just listings – it requires expertise, trust, and personalized guidance.
               </p>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                Today, we've grown to a fleet of over 50 well-maintained vehicles serving all major locations in Goa including Panjim, Madgaon, and both Dabolim and Mopa airports. Our core values remain the same - providing reliable, affordable, and hassle-free rental experiences to our customers throughout their Goa journey.
+              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                Today, we've successfully helped over 1000 families find their dream homes across Mumbai, handling properties worth over ₹100 crores. Our core values remain unchanged – providing reliable, transparent, and expert real estate services throughout Mumbai's prime locations.
               </p>
+
+              {/* Service Areas */}
+              <div className="bg-gray-50 rounded-2xl p-6">
+                <h3 className="font-heading text-lg font-bold text-gray-900 mb-4">
+                  Prime Mumbai Locations We Specialize In
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {['Bandra West', 'Juhu', 'Powai', 'Andheri West', 'Lower Parel', 'Worli'].map((location, index) => (
+                    <div key={index} className="flex items-center gap-2 text-gray-700">
+                      <MapPin className="w-4 h-4 text-blue-600" />
+                      <span className="font-medium">{location}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="relative h-96 rounded-lg overflow-hidden">
-              <img
-                src="https://images.pexels.com/photos/70912/pexels-photo-70912.jpeg"
-                alt="ZoiCarRentals team with our fleet of cars in Goa"
-                className="w-full h-full object-cover"
-                loading="lazy"
-                width="600"
-                height="400"
-              />
+            
+            <div className="relative">
+              <div className="relative h-96 rounded-3xl overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/about/mumbai-skyline.jpg"
+                  alt="Dream House Properties team with Mumbai skyline - Real Estate experts in Mumbai"
+                  fill
+                  className="object-cover"
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                
+                {/* Floating Badge */}
+                <div className="absolute top-4 left-4">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 flex items-center gap-2">
+                    <Award className="w-4 h-4 text-blue-600" />
+                    <span className="text-sm font-semibold text-gray-900">10+ Years Experience</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
       
       {/* Our Values */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4 md:px-6">
-          <h2 className="text-3xl font-bold mb-4 text-center">Our Values</h2>
-          <p className="text-center text-gray-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
-            These core principles guide everything we do at GoDrive
-          </p>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">Our Core Values</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              These fundamental principles guide everything we do at Dream House Properties, ensuring exceptional service for every Mumbai property transaction.
+            </p>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-sm">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-full inline-block mb-4">
-                <Users className="h-8 w-8 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Customer First</h3>
-              <p className="text-gray-700 dark:text-gray-300">
-                Our customers' satisfaction is our top priority. We go above and beyond to ensure you have a memorable and worry-free experience in Goa.
-              </p>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-sm">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-full inline-block mb-4">
-                <Award className="h-8 w-8 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Quality & Safety</h3>
-              <p className="text-gray-700 dark:text-gray-300">
-                We maintain our vehicles to the highest standards, ensuring your safety and comfort throughout your journey in Goa.
-              </p>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-sm">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-full inline-block mb-4">
-                <Clock className="h-8 w-8 text-blue-600" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Reliability</h3>
-              <p className="text-gray-700 dark:text-gray-300">
-                We understand that your time is valuable, which is why we ensure punctual service and 24/7 support throughout your rental period.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {values.map((value, index) => {
+              const IconComponent = value.icon;
+              return (
+                <Card key={index} className="p-8 text-center border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+                  <div className={`w-16 h-16 ${value.bgColor} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <IconComponent className={`h-8 w-8 ${value.color}`} />
+                  </div>
+                  <h3 className="text-xl font-bold mb-4 text-gray-900">{value.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {value.description}
+                  </p>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
       
       {/* Why Choose Us */}
-      <section className="py-20 bg-white dark:bg-gray-900">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1 relative h-96 rounded-lg overflow-hidden">
-              <img
-                src="https://images.pexels.com/photos/3786091/pexels-photo-3786091.jpeg"
-                alt="Happy customers with rental car"
-                className="w-full h-full object-cover"
-              />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="order-2 lg:order-1 relative">
+              <div className="relative h-96 rounded-3xl overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/about/happy-family.jpg"
+                  alt="Happy family with keys to their new Mumbai home - Dream House Properties success story"
+                  fill
+                  className="object-cover"
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                />
+              </div>
             </div>
+            
             <div className="order-1 lg:order-2">
-              <h2 className="text-3xl font-bold mb-6">Why Choose GoDrive?</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-gray-900">Why Choose Dream House Properties for Mumbai Real Estate?</h2>
               
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <div className="mt-1 mr-4">
-                    <Check className="h-5 w-5 text-green-500" />
+              <div className="space-y-6">
+                {whyChooseUs.map((item, index) => (
+                  <div key={index} className="flex items-start gap-4">
+                    <div className="mt-1">
+                      <Check className="h-6 w-6 text-green-500 flex-shrink-0" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg mb-2 text-gray-900">{item.title}</h3>
+                      <p className="text-gray-600 leading-relaxed">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-1">Local Expertise</h3>
-                    <p className="text-gray-700 dark:text-gray-300">
-                      As Goa locals, we provide insider tips and recommendations to enhance your travel experience.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="mt-1 mr-4">
-                    <Check className="h-5 w-5 text-green-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-1">Flexible Rental Options</h3>
-                    <p className="text-gray-700 dark:text-gray-300">
-                      From hourly rentals to long-term leases, we offer options that suit your specific needs and budget.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="mt-1 mr-4">
-                    <Check className="h-5 w-5 text-green-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-1">Transparent Pricing</h3>
-                    <p className="text-gray-700 dark:text-gray-300">
-                      No hidden charges or surprise fees. What you see is what you pay, with all taxes and basic insurance included.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <div className="mt-1 mr-4">
-                    <Check className="h-5 w-5 text-green-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-1">Personalized Service</h3>
-                    <p className="text-gray-700 dark:text-gray-300">
-                      We take the time to understand your requirements and provide tailored recommendations for your perfect Goa experience.
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
-      
-      {/* Team Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800" id="our-team">
-        <div className="container mx-auto px-4 md:px-6">
-          <h2 className="text-3xl font-bold mb-4 text-center">Meet Our Team</h2>
-          <p className="text-center text-gray-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
-            The dedicated professionals behind ZoiCarRentals who make your Goa car rental experience memorable
+
+      {/* Team & Contact CTA */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <div className="container mx-auto px-4 md:px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
+            Ready to Find Your Dream Home in Mumbai?
+          </h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+            Our expert team is ready to help you navigate Mumbai's real estate market. 
+            From Bandra to Powai, we'll find the perfect property that matches your needs and budget.
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="mb-4 rounded-full overflow-hidden h-40 w-40 mx-auto">
-                <img
-                  src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg"
-                  alt="Rahul Naik - Founder & CEO"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-bold text-lg">Rahul Naik</h3>
-              <p className="text-blue-600 dark:text-blue-400 mb-2">Founder & CEO</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                With over 15 years in the Goa travel industry, Rahul brings a wealth of experience and a passion for authentic Goan hospitality to ZoiCarRentals.
-              </p>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              <Link href="/properties" className="flex items-center gap-2">
+                <Building2 className="w-5 h-5" />
+                Browse Properties
+              </Link>
+            </Button>
             
-            <div className="text-center">
-              <div className="mb-4 rounded-full overflow-hidden h-40 w-40 mx-auto">
-                <img
-                  src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg"
-                  alt="Priya Verma - Operations Manager"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-bold text-lg">Priya Verma</h3>
-              <p className="text-blue-600 dark:text-blue-400 mb-2">Operations Manager</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Priya ensures smooth day-to-day operations and is dedicated to maintaining our high service standards.
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="mb-4 rounded-full overflow-hidden h-40 w-40 mx-auto">
-                <img
-                  src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg"
-                  alt="Vikram Desai - Fleet Manager"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-bold text-lg">Vikram Desai</h3>
-              <p className="text-blue-600 dark:text-blue-400 mb-2">Fleet Manager</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                With his automotive expertise, Vikram ensures our entire fleet is maintained to the highest standards.
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="mb-4 rounded-full overflow-hidden h-40 w-40 mx-auto">
-                <img
-                  src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg"
-                  alt="Anjali Menon - Customer Relations"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="font-bold text-lg">Anjali Menon</h3>
-              <p className="text-blue-600 dark:text-blue-400 mb-2">Customer Relations</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Anjali's friendly demeanor and problem-solving skills ensure all customer queries are handled promptly and effectively.
-              </p>
-            </div>
+            <Button asChild variant="outline" size="lg" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-300">
+              <Link href="/contact" className="flex items-center gap-2">
+                <Phone className="w-5 h-5" />
+                Contact Our Experts
+              </Link>
+            </Button>
           </div>
-        </div>
-      </section>
-      
-      {/* FAQ Section for SEO */}
-      <section className="py-20 bg-white dark:bg-gray-900" id="faqs">
-        <div className="container mx-auto px-4 md:px-6">
-          <h2 className="text-3xl font-bold mb-6 text-center">Frequently Asked Questions</h2>
-          <p className="text-center text-gray-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
-            Common questions about ZoiCarRentals and our services in Goa
-          </p>
-          
-          <div className="max-w-3xl mx-auto space-y-6">
-            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-              <h3 className="font-bold text-lg mb-2">Where are your car rental locations in Goa?</h3>
-              <p className="text-gray-700 dark:text-gray-300">
-                We offer car rental services across all major locations in Goa including Calangute, Anjuna, Panjim, Madgaon, Candolim, 
-                Baga, and both Dabolim and Mopa airports. We also provide free delivery to your hotel or accommodation anywhere in Goa.
-              </p>
-            </div>
-            
-            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-              <h3 className="font-bold text-lg mb-2">What types of cars do you offer for rent in Goa?</h3>
-              <p className="text-gray-700 dark:text-gray-300">
-                Our fleet includes a wide range of vehicles to suit every need and budget - from economical hatchbacks like Swift and i10, 
-                to comfortable sedans like Honda City and Hyundai Verna, and premium SUVs like Toyota Innova and Mahindra XUV. All our cars 
-                are well-maintained and regularly serviced for a safe and comfortable journey throughout Goa.
-              </p>
-            </div>
-            
-            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-              <h3 className="font-bold text-lg mb-2">Do you offer airport pickup services in Goa?</h3>
-              <p className="text-gray-700 dark:text-gray-300">
-                Yes, we offer convenient pickup services at both Dabolim (GOI) and Mopa International Airports. Our team will be waiting 
-                for you at the arrival terminal with your chosen vehicle, allowing you to start your Goa adventure immediately upon landing.
-              </p>
-            </div>
-            
-            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
-              <h3 className="font-bold text-lg mb-2">What makes ZoiCarRentals different from other car rental services in Goa?</h3>
-              <p className="text-gray-700 dark:text-gray-300">
-                What sets us apart is our deep local knowledge of Goa, our commitment to customer service, and our well-maintained fleet. 
-                We offer 24/7 roadside assistance, unlimited kilometers, flexible pickup and drop-off options, and personalized recommendations 
-                for exploring Goa. Our team consists of Goa locals who can provide insider tips on the best beaches, restaurants, and attractions.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Testimonials for Social Proof */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-800">
-        <div className="container mx-auto px-4 md:px-6">
-          <h2 className="text-3xl font-bold mb-4 text-center">What Our Customers Say</h2>
-          <p className="text-center text-gray-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
-            Hear from travelers who have explored Goa with ZoiCarRentals
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm">
-              <div className="flex items-center mb-4">
-                <div className="text-yellow-400 flex">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                "We rented a car from ZoiCarRentals for our week-long trip to Goa and it was the best decision. The car was in excellent condition, 
-                and the team's recommendations for places to visit in South Goa were spot on. Will definitely use their services again!"
-              </p>
-              <div className="font-medium">Priya Sharma, Delhi</div>
-              <div className="text-sm text-gray-500">Visited January 2025</div>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm">
-              <div className="flex items-center mb-4">
-                <div className="text-yellow-400 flex">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                "The airport pickup service was seamless! Our flight was delayed but the ZoiCarRentals team waited patiently. The car was clean, 
-                well-maintained and perfect for navigating the narrow roads of North Goa. Their 24/7 support gave us peace of mind."
-              </p>
-              <div className="font-medium">Raj Malhotra, Mumbai</div>
-              <div className="text-sm text-gray-500">Visited March 2025</div>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-sm">
-              <div className="flex items-center mb-4">
-                <div className="text-yellow-400 flex">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-700 dark:text-gray-300 mb-4">
-                "As international tourists, we were initially nervous about renting a car in Goa, but ZoiCarRentals made it so easy. The unlimited 
-                kilometers option allowed us to explore from Arambol in the north to Palolem in the south without worrying about extra charges."
-              </p>
-              <div className="font-medium">John & Sarah Williams, UK</div>
-              <div className="text-sm text-gray-500">Visited February 2025</div>
+
+          {/* Quick Contact */}
+          <div className="mt-8 pt-8 border-t border-gray-200">
+            <p className="text-gray-600 mb-4">Need immediate assistance? Reach out to our Mumbai property experts</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="tel:+919082888912" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium">
+                <Phone className="w-4 h-4" />
+                +91 90828 88912
+              </a>
+              <a href="https://wa.me/917977288350?text=Hi,%20I'm%20interested%20in%20Mumbai%20properties." target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-green-600 hover:text-green-700 font-medium">
+                <MessageCircle className="w-4 h-4" />
+                WhatsApp: +91 79-77288350
+              </a>
             </div>
           </div>
         </div>

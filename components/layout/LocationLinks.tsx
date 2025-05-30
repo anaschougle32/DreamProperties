@@ -21,64 +21,76 @@ const LocationLinks = () => {
     fetchLocations();
   }, []);
 
-  // Comprehensive list of locations for SEO
+  // Comprehensive list of Mumbai locations for SEO
   const additionalLocations = [
-    // North Goa Locations
-    { name: "Anjuna", slug: "anjuna" },
-    { name: "Calangute", slug: "calangute" },
-    { name: "Baga", slug: "baga" },
-    { name: "Candolim", slug: "candolim" },
-    { name: "Panjim", slug: "panjim" },
-    { name: "Vagator", slug: "vagator" },
-    { name: "Morjim", slug: "morjim" },
-    { name: "Arambol", slug: "arambol" },
-    { name: "Mandrem", slug: "mandrem" },
-    { name: "Ashwem", slug: "ashwem" },
-    { name: "Sinquerim", slug: "sinquerim" },
-    { name: "Dona Paula", slug: "dona-paula" },
-    { name: "Arpora", slug: "arpora" },
-    { name: "Chapora", slug: "chapora" },
-    { name: "Siolim", slug: "siolim" },
-    { name: "Assagao", slug: "assagao" },
-    { name: "North Goa", slug: "north-goa" },
+    // Prime Mumbai Locations
+    { name: "Bandra West", slug: "bandra-west" },
+    { name: "Bandra East", slug: "bandra-east" },
+    { name: "Juhu", slug: "juhu" },
+    { name: "Powai", slug: "powai" },
+    { name: "Andheri West", slug: "andheri-west" },
+    { name: "Andheri East", slug: "andheri-east" },
+    { name: "Lower Parel", slug: "lower-parel" },
+    { name: "Worli", slug: "worli" },
+    { name: "Prabhadevi", slug: "prabhadevi" },
+    { name: "Dadar West", slug: "dadar-west" },
+    { name: "Dadar East", slug: "dadar-east" },
+    { name: "Matunga", slug: "matunga" },
+    { name: "Mahim", slug: "mahim" },
+    { name: "Khar West", slug: "khar-west" },
+    { name: "Santacruz West", slug: "santacruz-west" },
+    { name: "Santacruz East", slug: "santacruz-east" },
+    { name: "Vile Parle West", slug: "vile-parle-west" },
+    { name: "Vile Parle East", slug: "vile-parle-east" },
     
-    // South Goa Locations
-    { name: "Colva", slug: "colva" },
-    { name: "Palolem", slug: "palolem" },
-    { name: "Benaulim", slug: "benaulim" },
-    { name: "Varca", slug: "varca" },
-    { name: "Margao", slug: "margao" },
-    { name: "Agonda", slug: "agonda" },
-    { name: "Cavelossim", slug: "cavelossim" },
-    { name: "Mobor", slug: "mobor" },
-    { name: "Majorda", slug: "majorda" },
-    { name: "Betalbatim", slug: "betalbatim" },
-    { name: "Canacona", slug: "canacona" },
-    { name: "Bogmalo", slug: "bogmalo" },
-    { name: "Vasco Da Gama", slug: "vasco-da-gama" },
-    { name: "Cansaulim", slug: "cansaulim" },
-    { name: "Arossim", slug: "arossim" },
-    { name: "South Goa", slug: "south-goa" },
+    // Central Mumbai
+    { name: "Colaba", slug: "colaba" },
+    { name: "Fort", slug: "fort" },
+    { name: "Nariman Point", slug: "nariman-point" },
+    { name: "Churchgate", slug: "churchgate" },
+    { name: "Marine Drive", slug: "marine-drive" },
+    { name: "Tardeo", slug: "tardeo" },
+    { name: "Breach Candy", slug: "breach-candy" },
+    { name: "Malabar Hill", slug: "malabar-hill" },
+    { name: "Cuffe Parade", slug: "cuffe-parade" },
+    { name: "Ballard Estate", slug: "ballard-estate" },
     
-    // Transportation Hubs
-    { name: "Goa Airport", slug: "goa-airport" },
-    { name: "Mopa Airport", slug: "mopa-airport" },
-    { name: "Madgaon Railway Station", slug: "madgaon-railway" },
-    { name: "Thivim Railway Station", slug: "thivim-railway" },
-    { name: "Karmali Railway Station", slug: "karmali-railway" },
-    { name: "Vasco Railway Station", slug: "vasco-railway" },
+    // Suburbs
+    { name: "Goregaon West", slug: "goregaon-west" },
+    { name: "Goregaon East", slug: "goregaon-east" },
+    { name: "Malad West", slug: "malad-west" },
+    { name: "Malad East", slug: "malad-east" },
+    { name: "Kandivali West", slug: "kandivali-west" },
+    { name: "Kandivali East", slug: "kandivali-east" },
+    { name: "Borivali West", slug: "borivali-west" },
+    { name: "Borivali East", slug: "borivali-east" },
+    { name: "Dahisar", slug: "dahisar" },
+    { name: "Mira Road", slug: "mira-road" },
+    { name: "Bhayander", slug: "bhayander" },
+    { name: "Vasai", slug: "vasai" },
+    { name: "Virar", slug: "virar" },
     
-    // Cities and Towns
-    { name: "Madgaon", slug: "madgaon" },
-    { name: "Mapusa", slug: "mapusa" },
-    { name: "Porvorim", slug: "porvorim" },
-    { name: "Bicholim", slug: "bicholim" },
-    { name: "Ponda", slug: "ponda" },
-    { name: "Curchorem", slug: "curchorem" },
-    { name: "Sanquelim", slug: "sanquelim" },
-    { name: "Quepem", slug: "quepem" },
-    { name: "Cuncolim", slug: "cuncolim" },
-    { name: "Sanguem", slug: "sanguem" }
+    // Eastern Suburbs
+    { name: "Kurla", slug: "kurla" },
+    { name: "Ghatkopar West", slug: "ghatkopar-west" },
+    { name: "Ghatkopar East", slug: "ghatkopar-east" },
+    { name: "Vikhroli", slug: "vikhroli" },
+    { name: "Kanjurmarg", slug: "kanjurmarg" },
+    { name: "Bhandup", slug: "bhandup" },
+    { name: "Mulund", slug: "mulund" },
+    { name: "Thane", slug: "thane" },
+    { name: "Dombivli", slug: "dombivli" },
+    { name: "Kalyan", slug: "kalyan" },
+    
+    // Navi Mumbai
+    { name: "Vashi", slug: "vashi" },
+    { name: "Nerul", slug: "nerul" },
+    { name: "Belapur", slug: "belapur" },
+    { name: "Kharghar", slug: "kharghar" },
+    { name: "Panvel", slug: "panvel" },
+    { name: "Airoli", slug: "airoli" },
+    { name: "Ghansoli", slug: "ghansoli" },
+    { name: "Kopar Khairane", slug: "kopar-khairane" }
   ];
 
   // Combine database locations with additional static locations
@@ -92,8 +104,8 @@ const LocationLinks = () => {
         id: `static-${loc.slug}`,
         name: loc.name,
         slug: loc.slug,
-        headline: `Car Rental in ${loc.name}, Goa`,
-        content: `Find the best car rental deals in ${loc.name}, Goa with ZoiCarRentals.`,
+        headline: `Properties in ${loc.name}, Mumbai`,
+        content: `Find premium properties for sale and rent in ${loc.name}, Mumbai with Dream House Properties.`,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       });
@@ -103,8 +115,8 @@ const LocationLinks = () => {
   return (
     <div className="w-full bg-gray-900 text-white py-6 border-t border-gray-800">
       <div className="container mx-auto px-4 md:px-6">
-        <h3 className="text-xl font-bold mb-4 text-white relative inline-block after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-red-600">
-          LOCATION
+        <h3 className="text-xl font-bold mb-4 text-white relative inline-block after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-blue-600">
+          MUMBAI PROPERTIES BY LOCATION
         </h3>
         <div className="flex flex-wrap gap-y-1 mt-4">
           {allLocations.map((location, index) => (
@@ -114,7 +126,7 @@ const LocationLinks = () => {
               className="text-gray-300 hover:text-blue-400 transition-colors text-sm md:text-base"
             >
               <span className="mx-1 text-gray-600">|</span>
-              Car Rental in {location.name}
+              Properties in {location.name}
             </Link>
           ))}
           <Link
@@ -122,7 +134,7 @@ const LocationLinks = () => {
             className="text-gray-300 hover:text-blue-400 transition-colors text-sm md:text-base"
           >
             <span className="mx-1 text-gray-600">|</span>
-            Car on Rent in Goa
+            All Mumbai Properties
           </Link>
           <span className="mx-1 text-gray-600">|</span>
         </div>

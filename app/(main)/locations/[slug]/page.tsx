@@ -1,12 +1,11 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getLocationBySlug, getCars, getBrands } from "@/lib/supabase";
-import { Car as SupabaseCar } from "@/lib/supabase";
-import { Car } from "@/lib/types";
+import { getLocationBySlug, getPropertiesByLocation } from "@/lib/supabase";
+import { Property } from "@/lib/types";
 import { Separator } from "@/components/ui/separator";
-import { MapPin } from "lucide-react";
-import CarCard from "@/components/car/CarCard";
-import Head from "next/head";
+import { MapPin, Building2, TrendingUp, Users, Phone, MessageCircle } from "lucide-react";
+import PropertyCard from "@/components/property/PropertyCard";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   params: { slug: string };
@@ -18,29 +17,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     
     if (!location) {
       return {
-        title: "Location Not Found | ZoiCarRentals",
-        description: "The requested car rental location could not be found. Browse our other locations for car rentals in Goa."
+        title: "Location Not Found | Dream House Properties",
+        description: "The requested property location could not be found. Browse our other Mumbai locations for premium real estate opportunities."
       };
     }
     
     // Create a more comprehensive SEO-friendly title and description
-    const title = `Car Rental in ${location.name}, Goa | Best Rates & Service | ZoiCarRentals`;
-    const description = `Find the best car rental deals in ${location.name}, Goa. ${location.headline} Book now for affordable rates, free delivery, and 24/7 roadside assistance. Explore Goa with our well-maintained vehicles.`;
+    const title = `Properties for Sale & Rent in ${location.name}, Mumbai | Dream House Properties`;
+    const description = `Find premium properties for sale and rent in ${location.name}, Mumbai. ${location.headline} RERA verified properties with expert guidance, legal assistance, and best investment opportunities.`;
     
     // Create a rich set of keywords specific to this location
     const keywords = [
-      `car rental ${location.name}`,
-      `rent a car ${location.name}`,
-      `${location.name} car hire`,
-      `cheap car rental ${location.name}`,
-      `ZoiCarRentals ${location.name}`,
-      `self drive cars ${location.name}`,
-      `car rental service ${location.name} Goa`,
-      `${location.name} airport pickup`,
-      `luxury car rental ${location.name}`,
-      `budget car rental ${location.name}`,
-      `${location.name} car rental prices`,
-      `best car rental in ${location.name}`
+      `properties ${location.name} Mumbai`,
+      `apartments for sale ${location.name}`,
+      `${location.name} real estate`,
+      `luxury properties ${location.name}`,
+      `Dream House Properties ${location.name}`,
+      `independent houses ${location.name}`,
+      `property investment ${location.name} Mumbai`,
+      `${location.name} property prices`,
+      `RERA verified properties ${location.name}`,
+      `premium apartments ${location.name}`,
+      `${location.name} property dealers`,
+      `best properties in ${location.name}`
     ].join(', ');
     
     return {
@@ -50,27 +49,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title,
         description,
-        url: `https://zoicarrentals.com/locations/${params.slug}`,
-        siteName: 'ZoiCarRentals',
+        url: `https://dreamhouseproperties.com/locations/${params.slug}`,
+        siteName: 'Dream House Properties',
         locale: 'en_IN',
         type: 'website',
         images: [
           {
-            url: '/images/locations/og-image.jpg',
+            url: `/images/locations/${params.slug}-og.jpg`,
             width: 1200,
             height: 630,
-            alt: `Car Rental in ${location.name}, Goa`
+            alt: `Properties in ${location.name}, Mumbai`
           }
         ],
       },
       twitter: {
         card: 'summary_large_image',
-        title: `Car Rental in ${location.name} | ZoiCarRentals`,
+        title: `Properties in ${location.name}, Mumbai | Dream House Properties`,
         description: location.headline,
-        images: [`/images/locations/${params.slug}.jpg`, '/images/locations/default.jpg'],
+        images: [`/images/locations/${params.slug}.jpg`],
       },
       alternates: {
-        canonical: `https://zoicarrentals.com/locations/${params.slug}`,
+        canonical: `https://dreamhouseproperties.com/locations/${params.slug}`,
       },
       robots: {
         index: true,
@@ -84,39 +83,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   } catch (error) {
     console.error("Error generating metadata:", error);
     return {
-      title: "Car Rental Locations in Goa | ZoiCarRentals",
-      description: "Explore our car rental locations across Goa. Find the perfect vehicle for your trip with competitive rates and excellent service.",
+      title: "Mumbai Property Locations | Dream House Properties",
+      description: "Explore premium property locations across Mumbai. Find luxury apartments, villas, and independent houses with expert guidance.",
     };
   }
-}
-
-// Helper function to convert Supabase car to our app's Car type
-async function mapSupabaseCarToAppCar(carData: SupabaseCar): Promise<Car> {
-  // Get brand info
-  const brands = await getBrands();
-  const brand = brands.find(b => b.id === carData.brand_id);
-  const brandName = brand ? brand.name : "Unknown";
-  
-  return {
-    id: carData.id,
-    name: carData.name,
-    brand: brandName,
-    slug: carData.slug,
-    price_per_day: carData.price_per_day,
-    description: carData.description || "",
-    features: (carData.features || []).map(feature => ({
-      icon: "check",
-      name: feature
-    })),
-    fuel_type: carData.fuel_type as any,
-    transmission: carData.transmission as any,
-    min_days: 1, // Default minimum days
-    main_image: carData.main_image || "/images/car-placeholder.jpg",
-    mileage: carData.mileage || undefined,
-    category: carData.seats <= 5 
-      ? carData.seats <= 4 ? "Hatchback" : "Sedan" 
-      : carData.seats <= 7 ? "SUV" : "Premium"
-  };
 }
 
 export default async function LocationPage({ params }: Props) {
@@ -130,342 +100,251 @@ export default async function LocationPage({ params }: Props) {
       
       // Create a fallback location based on the slug
       const fallbackLocations = {
-        // North Goa Locations
-        'calangute': {
-          id: 'default-calangute',
-          name: 'Calangute',
-          slug: 'calangute',
-          headline: 'Premium Car Rental Service in Calangute, Goa',
-          content: 'Find the best car rental deals in Calangute, Goa with ZoiCarRentals. We offer a wide range of vehicles from economy to luxury cars. Calangute is the largest beach in North Goa and one of the most popular tourist destinations. With our car rental service, you can easily explore nearby attractions like Baga Beach, Fort Aguada, and Anjuna Flea Market. Our fleet includes economy cars, SUVs, and luxury vehicles to suit every budget and requirement. All our cars are well-maintained and come with 24/7 roadside assistance for a worry-free experience.',
+        // Prime Mumbai Locations
+        'bandra-west': {
+          id: 'default-bandra-west',
+          name: 'Bandra West',
+          slug: 'bandra-west',
+          headline: 'Luxury Properties in Bandra West - The Queen of Suburbs',
+          content: 'Discover premium apartments and penthouses in Bandra West with stunning sea views, excellent connectivity, and world-class amenities. Known as the "Queen of Suburbs," Bandra West is Mumbai\'s most prestigious neighborhood, home to Bollywood celebrities and business tycoons. Our curated collection includes luxury 2BHK, 3BHK, and 4BHK apartments with prices ranging from ₹3 Cr to ₹15 Cr. The area offers excellent connectivity via Western Railway, metro, and the iconic Bandra-Worli Sea Link. Key attractions include Bandstand Promenade, Carter Road, and numerous fine dining restaurants and cafes.',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         },
-        'anjuna': {
-          id: 'default-anjuna',
-          name: 'Anjuna',
-          slug: 'anjuna',
-          headline: 'Premium Car Rental Service in Anjuna, North Goa',
-          content: 'Looking for a reliable car rental in Anjuna, Goa? ZoiCarRentals offers a wide range of vehicles to suit your needs. Anjuna is famous for its trance parties, flea market, and beautiful beaches. With our car rental service, you can easily explore the vibrant nightlife, visit the famous Wednesday Flea Market, or drive to nearby beaches like Vagator and Baga. We offer competitive rates, flexible rental periods, and well-maintained vehicles to ensure a comfortable and enjoyable journey throughout your stay in Anjuna.',
+        'juhu': {
+          id: 'default-juhu',
+          name: 'Juhu',
+          slug: 'juhu',
+          headline: 'Beachside Luxury Properties in Juhu, Mumbai',
+          content: 'Experience coastal living with luxury villas and apartments in Juhu, Mumbai\'s entertainment hub. Juhu is famous for its beautiful beach, proximity to the airport, and celebrity homes. Our property portfolio includes beachside apartments, luxury villas, and premium penthouses with prices ranging from ₹4 Cr to ₹20 Cr. The area offers excellent connectivity to the airport (10 minutes), business districts, and entertainment venues. Key attractions include Juhu Beach, ISKCON Temple, and numerous five-star hotels and restaurants.',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         },
-        'baga': {
-          id: 'default-baga',
-          name: 'Baga',
-          slug: 'baga',
-          headline: 'Affordable Car Rental Service in Baga Beach, Goa',
-          content: 'Explore the vibrant Baga Beach area with a reliable car rental from ZoiCarRentals. Best rates guaranteed! Baga is one of the most popular beaches in North Goa, known for its nightlife, water sports, and shopping. With our car rental service, you can easily visit nearby attractions like Calangute Beach, Anjuna Beach, and the Saturday Night Market. We offer a wide range of vehicles from compact cars to SUVs, all at competitive prices with unlimited kilometers.',
+        'powai': {
+          id: 'default-powai',
+          name: 'Powai',
+          slug: 'powai',
+          headline: 'Modern Properties in Powai - Mumbai\'s IT Hub',
+          content: 'Find contemporary apartments and villas in Powai with stunning lake views, modern infrastructure, and proximity to IT companies. Powai is Mumbai\'s planned suburb, known for its IT companies, educational institutions, and beautiful lake. Our properties include modern 1BHK, 2BHK, and 3BHK apartments with prices ranging from ₹1.5 Cr to ₹8 Cr. The area offers excellent connectivity via Eastern Express Highway and upcoming metro lines. Key attractions include Powai Lake, Hiranandani Gardens, and numerous shopping malls and restaurants.',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         },
-        'candolim': {
-          id: 'default-candolim',
-          name: 'Candolim',
-          slug: 'candolim',
-          headline: 'Luxury Car Rental Service in Candolim, North Goa',
-          content: 'Experience the beautiful beaches of Candolim with a premium car rental from ZoiCarRentals. Wide selection of vehicles available. Candolim is a serene beach destination in North Goa, perfect for those seeking a more relaxed atmosphere. With our car rental service, you can easily explore nearby attractions like Fort Aguada, Sinquerim Beach, and the shipwreck of the MV River Princess. We offer luxury vehicles with professional drivers or self-drive options to make your Goa vacation truly memorable.',
+        'andheri-west': {
+          id: 'default-andheri-west',
+          name: 'Andheri West',
+          slug: 'andheri-west',
+          headline: 'Premium Properties in Andheri West with Excellent Connectivity',
+          content: 'Explore luxury apartments in Andheri West with metro connectivity, proximity to airport, and vibrant commercial areas. Andheri West is one of Mumbai\'s most well-connected suburbs, offering the perfect blend of residential comfort and commercial convenience. Our properties include modern apartments and independent houses with prices ranging from ₹1.5 Cr to ₹6 Cr. The area offers excellent connectivity via Western Railway, metro, and proximity to the international airport. Key attractions include Versova Beach, Lokhandwala Market, and numerous entertainment venues.',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         },
-        'panjim': {
-          id: 'default-panjim',
-          name: 'Panjim',
-          slug: 'panjim',
-          headline: 'Reliable Car Rental Service in Panjim, Goa\'s Capital',
-          content: 'Explore Goa\'s charming capital city with a car rental from ZoiCarRentals in Panjim. Panjim (Panaji) is the capital of Goa, known for its Portuguese architecture, beautiful churches, and vibrant cultural scene. With our car rental service, you can easily explore the Latin Quarter of Fontainhas, visit the iconic Our Lady of the Immaculate Conception Church, or take a cruise on the Mandovi River. We offer a wide range of vehicles from compact cars to premium sedans, all at competitive rates with excellent customer service.',
+        'lower-parel': {
+          id: 'default-lower-parel',
+          name: 'Lower Parel',
+          slug: 'lower-parel',
+          headline: 'High-Rise Luxury Properties in Lower Parel Business District',
+          content: 'Discover premium high-rise apartments in Lower Parel, Mumbai\'s business district with corporate offices, shopping malls, and fine dining. Lower Parel has transformed from a mill district to Mumbai\'s new business hub, housing major corporate offices and luxury residential towers. Our properties include premium 2BHK, 3BHK, and 4BHK apartments with prices ranging from ₹4 Cr to ₹20 Cr. The area offers excellent connectivity via Western Railway and upcoming metro lines. Key attractions include Phoenix Mills, Palladium Mall, and numerous corporate offices.',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         },
-        'vagator': {
-          id: 'default-vagator',
-          name: 'Vagator',
-          slug: 'vagator',
-          headline: 'Self-Drive Car Rental in Vagator Beach, North Goa',
-          content: 'Rent a car in Vagator and explore the beautiful beaches and nightlife at your own pace with ZoiCarRentals. Vagator is known for its scenic cliffs, beautiful beaches, and vibrant nightlife. With our car rental service, you can easily visit the famous Chapora Fort, enjoy the sunset at Little Vagator Beach, or party at one of the many beach clubs. We offer reliable self-drive cars with unlimited kilometers and 24/7 roadside assistance for a worry-free experience.',
+        'worli': {
+          id: 'default-worli',
+          name: 'Worli',
+          slug: 'worli',
+          headline: 'Ultra-Luxury Properties in Worli with Sea Views',
+          content: 'Experience the pinnacle of luxury living in Worli with sea-facing penthouses, premium towers, and proximity to Bandra-Worli Sea Link. Worli is one of Mumbai\'s most prestigious addresses, known for its ultra-luxury residential towers and stunning sea views. Our properties include premium apartments and penthouses with prices ranging from ₹5 Cr to ₹50 Cr. The area offers excellent connectivity via Bandra-Worli Sea Link and upcoming metro lines. Key attractions include Worli Sea Face, Nehru Planetarium, and numerous five-star hotels.',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         },
-        'morjim': {
-          id: 'default-morjim',
-          name: 'Morjim',
-          slug: 'morjim',
-          headline: 'Car Rental Services in Morjim Beach, North Goa',
-          content: 'Visit the turtle nesting beach of Morjim with a comfortable car rental from ZoiCarRentals. Best rates guaranteed! Morjim is known as "Little Russia" due to its popularity among Russian tourists and is famous for being a nesting site for Olive Ridley turtles. With our car rental service, you can explore the serene beaches, enjoy water sports, or visit nearby attractions like Chapora Fort and Ashwem Beach. We offer a wide range of vehicles to suit your needs and budget.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        'arambol': {
-          id: 'default-arambol',
-          name: 'Arambol',
-          slug: 'arambol',
-          headline: 'Budget Car Rental in Arambol Beach, North Goa',
-          content: 'Explore the hippie paradise of Arambol with an affordable car rental from ZoiCarRentals. Book now! Arambol is known for its bohemian vibe, drum circles, and alternative lifestyle. With our car rental service, you can easily explore the Sweet Water Lake, visit the nearby Keri Beach, or drive to the Teracol Fort. We offer budget-friendly car rentals with excellent customer service and well-maintained vehicles for a comfortable journey.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        
-        // South Goa Locations
-        'colva': {
-          id: 'default-colva',
-          name: 'Colva',
-          slug: 'colva',
-          headline: 'Premium Car Rental Service in Colva Beach, South Goa',
-          content: 'Discover the serene beaches of Colva with a reliable car rental from ZoiCarRentals. Wide range of vehicles available. Colva is one of the largest and most popular beaches in South Goa, known for its white sand and clear waters. With our car rental service, you can easily explore nearby attractions like Benaulim Beach, Margao city, and the Ancestral Goa Museum. We offer premium vehicles with professional drivers or self-drive options to make your South Goa exploration comfortable and convenient.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        'palolem': {
-          id: 'default-palolem',
-          name: 'Palolem',
-          slug: 'palolem',
-          headline: 'Car Rental Services in Palolem Beach, South Goa',
-          content: 'Explore the picturesque Palolem Beach with a comfortable car rental from ZoiCarRentals. Best rates guaranteed! Palolem is often called "Paradise Beach" and is known for its crescent-shaped bay and calm waters. With our car rental service, you can easily visit nearby attractions like Butterfly Beach, Agonda Beach, and Cotigao Wildlife Sanctuary. We offer a wide range of vehicles from compact cars to SUVs, all at competitive prices with unlimited kilometers.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        'benaulim': {
-          id: 'default-benaulim',
-          name: 'Benaulim',
-          slug: 'benaulim',
-          headline: 'Self-Drive Car Rental in Benaulim, South Goa',
-          content: 'Rent a car in Benaulim and explore the beautiful beaches at your own pace with ZoiCarRentals. Benaulim is a tranquil fishing village in South Goa, known for its clean beaches and authentic Goan culture. With our car rental service, you can easily explore nearby attractions like Colva Beach, Varca Beach, and the Church of St. John the Baptist. We offer reliable self-drive cars with unlimited kilometers and 24/7 roadside assistance for a worry-free experience.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        'varca': {
-          id: 'default-varca',
-          name: 'Varca',
-          slug: 'varca',
-          headline: 'Luxury Car Rental in Varca Beach, South Goa',
-          content: 'Experience the pristine beaches of Varca with a premium car rental from ZoiCarRentals. Wide selection available. Varca is known for its pristine white sandy beaches, luxury resorts, and dolphin spotting opportunities. With our car rental service, you can easily explore nearby attractions like Cavelossim Beach, Mobor Beach, and the Zeebop by the Sea restaurant. We offer luxury vehicles with professional drivers or self-drive options to make your South Goa vacation truly memorable.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        'margao': {
-          id: 'default-margao',
-          name: 'Margao',
-          slug: 'margao',
-          headline: 'Affordable Car Rental Service in Margao, South Goa',
-          content: 'Explore the commercial hub of South Goa with a reliable car rental from ZoiCarRentals. Best rates guaranteed! Margao is the commercial capital of Goa, known for its markets, churches, and cultural heritage. With our car rental service, you can easily visit the Municipal Garden, the Holy Spirit Church, or drive to nearby beaches like Colva and Benaulim. We offer budget-friendly car rentals with excellent customer service and well-maintained vehicles for a comfortable journey.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        'agonda': {
-          id: 'default-agonda',
-          name: 'Agonda',
-          slug: 'agonda',
-          headline: 'Car Rental Services in Agonda Beach, South Goa',
-          content: 'Visit the secluded Agonda Beach with a comfortable car rental from ZoiCarRentals. Explore at your own pace! Agonda is a serene and less crowded beach in South Goa, perfect for those seeking peace and tranquility. With our car rental service, you can easily explore nearby attractions like Palolem Beach, Butterfly Beach, and the Cola Beach. We offer a wide range of vehicles from compact cars to SUVs, all at competitive prices with unlimited kilometers.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        
-        // Airports and Transportation Hubs
-        'goa-airport': {
-          id: 'default-goa-airport',
-          name: 'Goa Airport',
-          slug: 'goa-airport',
-          headline: 'Convenient Car Rental Service at Dabolim Airport (GOI)',
-          content: 'Start your Goa adventure right from the airport with ZoiCarRentals at Goa Airport (Dabolim). We offer convenient pickup and drop-off services at Dabolim Airport, allowing you to begin your Goa exploration as soon as you land. Our fleet includes economy cars, SUVs, and luxury vehicles to suit every budget and requirement. All our cars are well-maintained and come with 24/7 roadside assistance for a worry-free experience. Pre-book your car rental to avoid last-minute hassles and enjoy special airport pickup discounts.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        'mopa-airport': {
-          id: 'default-mopa-airport',
-          name: 'Mopa Airport',
-          slug: 'mopa-airport',
-          headline: 'Car Rental at Manohar International Airport, North Goa',
-          content: 'Rent a car directly from the new Mopa Airport with ZoiCarRentals. Seamless pickup and drop-off service available. The Manohar International Airport (Mopa) is the newest airport in Goa, serving North Goa destinations. With our car rental service, you can easily begin your journey to popular North Goa beaches like Arambol, Morjim, and Vagator. We offer a wide range of vehicles from compact cars to premium sedans, all at competitive rates with excellent customer service.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        'madgaon-railway': {
-          id: 'default-madgaon-railway',
-          name: 'Madgaon Railway Station',
-          slug: 'madgaon-railway',
-          headline: 'Car Rental Service at Madgaon Railway Station, Goa',
-          content: 'Arriving by train? Pick up your rental car directly from Madgaon Railway Station with ZoiCarRentals. Madgaon Railway Station is the main railway station in South Goa, connecting to major cities across India. With our car rental service, you can easily begin your journey to popular South Goa beaches like Colva, Palolem, and Benaulim. We offer convenient pickup and drop-off services at the station, allowing you to start your Goa exploration as soon as you arrive.',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        },
-        'thivim-railway': {
-          id: 'default-thivim-railway',
-          name: 'Thivim Railway Station',
-          slug: 'thivim-railway',
-          headline: 'Car Rental at Thivim Railway Station, North Goa',
-          content: 'Convenient car rental service at Thivim Railway Station with ZoiCarRentals. Book in advance for best rates! Thivim Railway Station is the main railway station serving North Goa, connecting to major cities across India. With our car rental service, you can easily begin your journey to popular North Goa destinations like Calangute, Baga, and Anjuna. We offer a wide range of vehicles from compact cars to SUVs, all at competitive prices with unlimited kilometers.',
+        'colaba': {
+          id: 'default-colaba',
+          name: 'Colaba',
+          slug: 'colaba',
+          headline: 'Heritage Properties in Colaba - South Mumbai\'s Crown Jewel',
+          content: 'Explore heritage apartments and modern penthouses in Colaba with proximity to Gateway of India, Taj Hotel, and Mumbai\'s business district. Colaba is South Mumbai\'s most iconic neighborhood, known for its colonial architecture, heritage buildings, and proximity to the business district. Our properties include heritage apartments and modern penthouses with prices ranging from ₹6 Cr to ₹30 Cr. The area offers excellent connectivity to the business district and major attractions. Key landmarks include Gateway of India, Taj Mahal Palace Hotel, and Colaba Causeway.',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }
       };
       
-      // Use the fallback location if it exists, otherwise create a generic one
-      location = fallbackLocations[params.slug as keyof typeof fallbackLocations] || {
-        id: `default-${params.slug}`,
-        name: params.slug.charAt(0).toUpperCase() + params.slug.slice(1).replace(/-/g, ' '),
-        slug: params.slug,
-        headline: `Car Rental Service in ${params.slug.charAt(0).toUpperCase() + params.slug.slice(1).replace(/-/g, ' ')}, Goa`,
-        content: `Find the best car rental deals in ${params.slug.charAt(0).toUpperCase() + params.slug.slice(1).replace(/-/g, ' ')}, Goa with ZoiCarRentals.`,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
+      const fallbackLocation = fallbackLocations[params.slug as keyof typeof fallbackLocations];
+      
+      if (!fallbackLocation) {
+        notFound();
+      }
+      
+      location = fallbackLocation;
     }
-    
-    // Fetch all cars instead of just cars for this location
-    const carsData = await getCars();
-    const cars = await Promise.all(carsData.map(car => mapSupabaseCarToAppCar(car)));
-    
+
+    // Get properties for this location from database
+    const { data: properties } = await getPropertiesByLocation(location.name, 6);
+
     return (
-      <div className="container mx-auto px-4 md:px-6 py-10 pt-24 md:pt-32">
-        {/* Breadcrumbs for SEO and navigation */}
-        <nav className="text-sm mb-6" aria-label="Breadcrumb">
-          <ol className="list-none p-0 inline-flex">
-            <li className="flex items-center">
-              <a href="/" className="text-blue-600 hover:text-blue-800">Home</a>
-              <svg className="fill-current w-3 h-3 mx-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"></path>
-              </svg>
-            </li>
-            <li className="flex items-center">
-              <a href="/locations" className="text-blue-600 hover:text-blue-800">Locations</a>
-              <svg className="fill-current w-3 h-3 mx-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-                <path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"></path>
-              </svg>
-            </li>
-            <li>
-              <span className="text-gray-500" aria-current="page">{location.name}</span>
-            </li>
-          </ol>
-        </nav>
-        
-        <div className="mb-10">
-          <div className="flex items-center mb-2">
-            <MapPin className="h-5 w-5 text-blue-600 mr-2" />
-            <h1 className="text-3xl md:text-4xl font-bold">
-              Car Rental in {location.name}, Goa
-            </h1>
-          </div>
-          
-          {/* SEO-optimized subheading */}
-          <div className="text-lg text-blue-600 font-medium mb-4">
-            Best Car Rental Service in {location.name} | Affordable Rates | 24/7 Support
-          </div>
-          
-          <h2 className="text-xl md:text-2xl font-semibold mb-4 text-gray-700">
-            {location.headline}
-          </h2>
-          
-          <div className="prose prose-blue max-w-none">
-            {location.content.split('\n').map((paragraph, index) => (
-              <p key={index} className="mb-4 text-gray-600">
-                {paragraph}
+      <div className="min-h-screen bg-gray-50">
+        {/* Hero Section */}
+        <section className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 pt-24 md:pt-32 pb-16">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <MapPin className="w-4 h-4" />
+                <span>Properties in {location.name}</span>
+              </div>
+              
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-gray-900 leading-tight">
+                Premium Properties in
+                <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  {location.name}, Mumbai
+                </span>
+              </h1>
+              
+              <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">
+                {location.headline}
               </p>
-            ))}
-          </div>
-        </div>
-        
-        <Separator className="my-8" />
-        
-        {/* Services Section */}
-        <div className="mb-10">
-          <h2 className="text-2xl font-bold mb-6">Our Services in {location.name}</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                  </svg>
-                  <h3 className="text-xl font-semibold ml-3">Airport Transfer</h3>
-                </div>
-                <p className="text-gray-600">Convenient airport pickup and drop-off services from {location.name} to Dabolim and Mopa airports.</p>
-              </div>
-            </div>
-            
-            <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                  </svg>
-                  <h3 className="text-xl font-semibold ml-3">Pick and Drop</h3>
-                </div>
-                <p className="text-gray-600">Flexible pick-up and drop-off services in {location.name} at your convenience.</p>
-              </div>
-            </div>
-            
-            <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <h3 className="text-xl font-semibold ml-3">24/7 Availability</h3>
-                </div>
-                <p className="text-gray-600">Our services in {location.name} are available round the clock for your convenience.</p>
+
+              {/* Quick Actions */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4">
+                  <Building2 className="w-5 h-5 mr-2" />
+                  View All Properties
+                </Button>
+                <Button size="lg" variant="outline" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-4">
+                  <Phone className="w-5 h-5 mr-2" />
+                  Call +91 90828 88912
+                </Button>
               </div>
             </div>
           </div>
-        </div>
-        
-        <div className="mb-10">
-          <h2 className="text-2xl font-bold mb-6">Cars Available for Rent in {location.name}, Goa</h2>
-          
-          {cars.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cars.map(car => (
-                <CarCard key={car.id} car={car} showCategory={true} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-10 bg-gray-50 rounded-lg">
-              <p className="text-lg text-gray-500">No cars available at this location currently. Please check back soon or contact us for assistance.</p>
-            </div>
-          )}
-        </div>
-        
-        <div className="mt-12 bg-gray-50 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4">Why Rent a Car in {location.name}, Goa?</h3>
-          <p className="mb-4">
-            Renting a car in {location.name} gives you the freedom to explore Goa at your own pace. 
-            With ZoiCarRentals, you get competitive rates, well-maintained vehicles, and excellent customer service.
-          </p>
-          <p className="mb-4">
-            Whether you need a car for business or leisure, our fleet has options for every budget and requirement. 
-            Book your car rental in {location.name} today and enjoy a hassle-free experience.
-          </p>
-          <p>
-            Our {location.name} car rental service includes free delivery, unlimited kilometers, and 24/7 roadside assistance 
-            to ensure your Goa trip is comfortable and worry-free.
-          </p>
-        </div>
-        
-        {/* FAQ Section for SEO */}
-        <div className="mt-12">
-          <h3 className="text-2xl font-bold mb-6">Frequently Asked Questions about Car Rental in {location.name}</h3>
-          
-          <div className="space-y-4">
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h4 className="font-semibold text-lg">What documents do I need to rent a car in {location.name}?</h4>
-              <p className="mt-2 text-gray-600">To rent a car in {location.name}, you need a valid driving license, a government-issued ID proof, and a credit/debit card for security deposit.</p>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h4 className="font-semibold text-lg">Do you offer unlimited kilometers for car rentals in {location.name}?</h4>
-              <p className="mt-2 text-gray-600">Yes, most of our car rental packages in {location.name} come with unlimited kilometers, allowing you to explore Goa without worrying about extra charges.</p>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h4 className="font-semibold text-lg">Can I get a car delivered to my hotel in {location.name}?</h4>
-              <p className="mt-2 text-gray-600">Absolutely! We offer free car delivery and pickup services to hotels, resorts, and other locations in {location.name} for your convenience.</p>
+        </section>
+
+        {/* Location Content */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+                About {location.name}
+              </h2>
+              <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed">
+                {location.content.split('\n').map((paragraph, index) => (
+                  <p key={index} className="mb-4">{paragraph}</p>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </section>
+
+        {/* Properties Section */}
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                Available Properties in {location.name}
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Discover premium apartments, villas, and independent houses in {location.name} 
+                with expert guidance and RERA compliance.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {properties && properties.length > 0 ? (
+                properties.map((property) => (
+                  <PropertyCard key={property.id} property={property} />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No Properties Available</h3>
+                  <p className="text-gray-600 mb-6">
+                    We're currently updating our property listings for {location.name}. 
+                    Contact us for the latest available properties.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                      <Phone className="w-4 h-4 mr-2" />
+                      Call Now
+                    </Button>
+                    <Button variant="outline" className="border-green-500 text-green-700 hover:bg-green-50">
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      WhatsApp
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Load More Button - only show if there are properties */}
+            {properties && properties.length > 0 && (
+              <div className="text-center mt-12">
+                <Button size="lg" variant="outline" className="px-8 py-4">
+                  View More Properties in {location.name}
+                </Button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Location Stats */}
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center">
+                {location.name} Property Market Insights
+              </h2>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                <div className="text-center bg-gray-50 rounded-2xl p-6">
+                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">50+</div>
+                  <div className="text-sm text-gray-600">Properties Available</div>
+                </div>
+                <div className="text-center bg-gray-50 rounded-2xl p-6">
+                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">₹3Cr+</div>
+                  <div className="text-sm text-gray-600">Average Price</div>
+                </div>
+                <div className="text-center bg-gray-50 rounded-2xl p-6">
+                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">15%</div>
+                  <div className="text-sm text-gray-600">Annual Appreciation</div>
+                </div>
+                <div className="text-center bg-gray-50 rounded-2xl p-6">
+                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">100+</div>
+                  <div className="text-sm text-gray-600">Happy Families</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact CTA */}
+        <section className="py-16 bg-gradient-to-r from-blue-600 to-indigo-600">
+          <div className="container mx-auto px-4 md:px-6 text-center text-white">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                Ready to Find Your Dream Property in {location.name}?
+              </h2>
+              <p className="text-lg mb-8 opacity-90">
+                Get expert consultation and personalized property recommendations from our Mumbai real estate specialists.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4">
+                  <Building2 className="w-5 h-5 mr-2" />
+                  Schedule Site Visit
+                </Button>
+                <a
+                  href="https://wa.me/917977288350?text=Hi,%20I'm%20interested%20in%20properties%20in%20{location.name},%20Mumbai."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-green-500 hover:bg-green-600 text-white font-medium rounded-xl transition-colors"
+                >
+                  <MessageCircle className="w-5 h-5 mr-2" />
+                  WhatsApp Now
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     );
   } catch (error) {
-    console.error("Error in location page:", error);
-    throw error; // Let the error boundary handle this
+    console.error("Error loading location page:", error);
+    notFound();
   }
 }

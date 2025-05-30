@@ -1,255 +1,310 @@
-import { createClient } from '@/lib/supabase/client';
-import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Calendar, User, Tag, ArrowLeft, Clock, MessageCircle } from 'lucide-react';
-import BlogContent from '@/components/blog/BlogContent';
-import ShareButtons from '@/components/blog/ShareButtons';
-import ContactInfo from '@/components/blog/ContactInfo';
-import RelatedArticles from '@/components/blog/RelatedArticles';
-import type { BlogPost } from '@/types/blog';
-import { calculateReadingTime } from '@/lib/utils/reading-time';
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { getBlogBySlug, getRelatedBlogs, Blog } from "@/lib/supabase";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { 
+  Calendar, 
+  ArrowLeft, 
+  Share2, 
+  Facebook, 
+  Twitter, 
+  Linkedin,
+  Building2,
+  ArrowRight
+} from "lucide-react";
 
-export default async function BlogPost({ params }: { params: { slug: string } }) {
-  const supabase = createClient();
+type Props = {
+  params: { slug: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const blog = await getBlogBySlug(params.slug);
   
-  // Fetch the blog post by slug
-  const { data: postData, error } = await supabase
-    .from('blogs')
-    .select('*')
-    .eq('slug', params.slug)
-    .single<BlogPost>();
-
-  if (error || !postData) {
-    return notFound();
+  if (!blog) {
+    return {
+      title: "Blog Post Not Found | Dream House Properties",
+      description: "The requested blog post could not be found. Browse our other Mumbai real estate insights and guides."
+    };
   }
 
-  const post = postData as BlogPost;
+  const title = blog.meta_title || `${blog.title} | Dream House Properties Blog`;
+  const description = blog.meta_description || blog.excerpt || blog.content.substring(0, 160) + '...';
 
-  // Fetch all blog posts for related articles
-  const { data: allPosts } = await supabase
-    .from('blogs')
-    .select('*')
-    .eq('published', true)
-    .order('created_at', { ascending: false });
-    
-  const relatedPosts = (allPosts || []) as BlogPost[];
+  return {
+    title,
+    description,
+    keywords: blog.tags?.join(', ') || 'Mumbai real estate, property investment, real estate blog',
+    openGraph: {
+      title,
+      description,
+      images: blog.cover_image ? [blog.cover_image] : [],
+      type: 'article',
+      locale: 'en_IN',
+      publishedTime: blog.created_at,
+      modifiedTime: blog.updated_at,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: blog.cover_image ? [blog.cover_image] : [],
+    },
+  };
+}
 
-  // Update view count
-  if (post.id) {
-    await supabase
-      .from('blogs')
-      .update({ views: (post.views || 0) + 1 })
-      .eq('id', post.id);
-  }
-
-  // Calculate reading time
-  const readingTime = post.content ? calculateReadingTime(post.content) : 5;
-
+function BlogCard({ blog }: { blog: Blog }) {
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24">
-        <div className="mb-8">
-          <Link 
-            href="/blogs" 
-            className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 mr-1.5" />
-            Back to all articles
-          </Link>
-        </div>
-
-        {/* Article header */}
-        <header className="mb-12 text-center">
-          {post.category && (
-            <div className="inline-block mb-6">
-              <span className="px-4 py-2 rounded-full bg-blue-100 text-blue-800 text-sm font-medium dark:bg-blue-900/50 dark:text-blue-200">
-                {post.category}
-              </span>
-            </div>
-          )}
-          
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-            {post.title || 'Untitled Post'}
-          </h1>
-          
-          <div className="max-w-2xl mx-auto">
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-              {post.excerpt || 'A detailed look at our latest insights and updates.'}
-            </p>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
-            {post.author && (
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mr-3">
-                  <User className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900 dark:text-white">{post.author}</p>
-                </div>
-              </div>
-            )}
-            
-            <div className="h-4 w-px bg-gray-200 dark:bg-gray-700 hidden sm:block"></div>
-            
-            <div className="flex items-center space-x-6">
-              {post.created_at && (
-                <div className="flex items-center">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  <time dateTime={new Date(post.created_at).toISOString()}>
-                    {new Date(post.created_at).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </time>
-                </div>
-              )}
-              
-              <div className="flex items-center">
-                <Clock className="w-4 h-4 mr-2" />
-                <span>{readingTime} min read</span>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Cover image */}
-        {post.cover_image && (
-          <div className="relative w-full aspect-video mb-16 rounded-2xl overflow-hidden shadow-xl">
-            <Image
-              src={post.cover_image}
-              alt={post.title || 'Blog post cover'}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 1024px) 100vw, 75vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-          </div>
-        )}
-
-        {/* Article content */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          <article className="lg:col-span-8">
-            <div className="prose lg:prose-lg xl:prose-xl dark:prose-invert max-w-none">
-              <BlogContent content={post.content} />
-            </div>
-            
-            {/* Tags */}
-            {post.tags && post.tags.length > 0 && (
-              <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">TAGS</h3>
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <span 
-                      key={tag} 
-                      className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm font-medium dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {/* Author bio */}
-            {post.author && (
-              <div className="mt-12 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-2xl">
-                <div className="flex items-center">
-                  <div className="w-16 h-16 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mr-4">
-                    <User className="w-8 h-8 text-gray-500 dark:text-gray-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{post.author}</h3>
-                    <p className="text-gray-600 dark:text-gray-300 mt-1">
-                      {post.author_bio || 'Writer and content creator'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Comments section */}
-            <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Comments</h3>
-                <button className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                  <MessageCircle className="w-4 h-4 mr-1.5" />
-                  Leave a comment
-                </button>
-              </div>
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
-                <p className="text-center text-gray-500 dark:text-gray-400">
-                  Sign in to leave a comment
-                </p>
-              </div>
-            </div>
-          </article>
-          
-          {/* Sidebar */}
-          <aside className="lg:col-span-4 space-y-8">
-            {/* Table of contents */}
-            <div className="sticky top-24">
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Table of Contents</h3>
-                <div className="space-y-2 text-sm">
-                  {/* This would be dynamically generated based on headings */}
-                  <a href="#introduction" className="block text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors">Introduction</a>
-                  <a href="#features" className="block text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">Key Features</a>
-                  <a href="#conclusion" className="block text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">Conclusion</a>
-                </div>
-              </div>
-              
-              {/* Share sidebar */}
-              <div className="mt-8 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Share this article</h3>
-                <ShareButtons 
-                  url={`/blogs/${post.slug}`} 
-                  title={post.title}
-                  variant="vertical"
-                />
-              </div>
-            </div>
-          </aside>
-        </div>
-        
-        {/* Related Articles */}
-        {relatedPosts.length > 0 && (
-          <div className="mt-24">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">You might also like</h2>
-            <RelatedArticles 
-              currentPostId={post.id} 
-              category={post.category || 'General'} 
-              posts={relatedPosts} 
-            />
-          </div>
-        )}
-        
-        {/* Newsletter signup */}
-        <div className="mt-24 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl p-8 md:p-12 text-white">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">Stay updated with our latest posts</h2>
-            <p className="text-blue-100 mb-8">Subscribe to our newsletter and never miss our latest articles and updates.</p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 placeholder-blue-200 text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-              />
-              <button className="px-6 py-3 bg-white text-blue-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">
-                Subscribe
-              </button>
-            </div>
-          </div>
-        </div>
-        
-        {/* Contact information */}
-        <div className="mt-24">
-          <ContactInfo />
+    <Card className="overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
+      <div className="relative h-48 overflow-hidden">
+        <Image 
+          src={blog.cover_image || '/images/blog/placeholder.jpg'}
+          alt={blog.title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          sizes="(max-width: 768px) 100vw, 33vw"
+        />
+        <div className="absolute top-4 left-4">
+          <Badge className="bg-blue-600 text-white">
+            {blog.category || 'Real Estate'}
+          </Badge>
         </div>
       </div>
-    </div>
-  )
+      
+      <div className="p-6">
+        <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+          <span className="flex items-center gap-1">
+            <Calendar className="w-4 h-4" />
+            {new Date(blog.created_at).toLocaleDateString('en-IN', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            })}
+          </span>
+        </div>
+        
+        <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
+          <Link href={`/blogs/${blog.slug}`}>
+            {blog.title}
+          </Link>
+        </h3>
+        
+        <p className="text-gray-600 mb-4 line-clamp-2 text-sm">
+          {blog.excerpt || blog.content.substring(0, 100) + '...'}
+        </p>
+        
+        <Link 
+          href={`/blogs/${blog.slug}`}
+          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm group-hover:gap-3 transition-all"
+        >
+          Read More
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+    </Card>
+  );
+}
+
+export default async function BlogDetailsPage({ params }: Props) {
+  try {
+    console.log('Loading blog page for slug:', params.slug);
+    const blog = await getBlogBySlug(params.slug);
+    
+    if (!blog) {
+      console.log('Blog not found for slug:', params.slug);
+      notFound();
+    }
+
+    console.log('Blog loaded successfully:', blog.title);
+
+    // Get related blogs
+    const relatedBlogs = await getRelatedBlogs(blog.slug, blog.category || 'Real Estate', 3);
+    console.log('Related blogs loaded:', relatedBlogs.length);
+
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* Back Navigation */}
+        <div className="bg-white border-b">
+          <div className="container mx-auto px-4 md:px-6 py-4">
+            <Button variant="ghost" asChild>
+              <Link href="/blogs" className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Blog
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        <div className="container mx-auto px-4 md:px-6 py-8">
+          <div className="max-w-4xl mx-auto">
+            {/* Blog Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                <Badge variant="secondary">
+                  {blog.category || 'Real Estate'}
+                </Badge>
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4" />
+                  {new Date(blog.created_at).toLocaleDateString('en-IN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </span>
+              </div>
+              
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">
+                {blog.title}
+              </h1>
+
+              {blog.excerpt && (
+                <p className="text-xl text-gray-600 leading-relaxed mb-6">
+                  {blog.excerpt}
+                </p>
+              )}
+
+              {/* Tags */}
+              {blog.tags && blog.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {blog.tags.map((tag, index) => (
+                    <Badge key={index} variant="outline" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+
+              {/* Share Buttons */}
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-gray-700">Share:</span>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" className="p-2">
+                    <Facebook className="w-4 h-4" />
+                  </Button>
+                  <Button size="sm" variant="outline" className="p-2">
+                    <Twitter className="w-4 h-4" />
+                  </Button>
+                  <Button size="sm" variant="outline" className="p-2">
+                    <Linkedin className="w-4 h-4" />
+                  </Button>
+                  <Button size="sm" variant="outline" className="p-2">
+                    <Share2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Featured Image */}
+            {blog.cover_image && (
+              <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden mb-8">
+                <Image
+                  src={blog.cover_image}
+                  alt={blog.title}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 80vw"
+                />
+              </div>
+            )}
+
+            {/* Blog Content */}
+            <Card className="p-8 mb-12">
+              <div className="prose prose-lg max-w-none">
+                {blog.content.split('\n').map((paragraph, index) => {
+                  if (paragraph.trim() === '') return null;
+                  
+                  // Simple formatting - you can enhance this with a proper markdown parser
+                  if (paragraph.startsWith('# ')) {
+                    return (
+                      <h2 key={index} className="text-2xl font-bold text-gray-900 mt-8 mb-4">
+                        {paragraph.substring(2)}
+                      </h2>
+                    );
+                  }
+                  
+                  if (paragraph.startsWith('## ')) {
+                    return (
+                      <h3 key={index} className="text-xl font-bold text-gray-900 mt-6 mb-3">
+                        {paragraph.substring(3)}
+                      </h3>
+                    );
+                  }
+                  
+                  return (
+                    <p key={index} className="text-gray-600 leading-relaxed mb-4">
+                      {paragraph}
+                    </p>
+                  );
+                })}
+              </div>
+            </Card>
+
+            {/* Author/Company Info */}
+            <Card className="p-6 mb-12">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Building2 className="w-8 h-8 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Dream House Properties</h3>
+                  <p className="text-gray-600 text-sm">
+                    Mumbai's trusted real estate partner with 10+ years of experience in luxury properties
+                  </p>
+                  <div className="flex gap-4 mt-2">
+                    <Button size="sm" variant="outline">
+                      <Link href="/contact">Contact Us</Link>
+                    </Button>
+                    <Button size="sm" variant="outline">
+                      <Link href="/properties">View Properties</Link>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Related Articles */}
+            {relatedBlogs.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Articles</h2>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {relatedBlogs.map((relatedBlog) => (
+                    <BlogCard key={relatedBlog.id} blog={relatedBlog} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* CTA Section */}
+            <Card className="p-8 mt-12 bg-gradient-to-r from-blue-50 to-indigo-50 border-0">
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  Ready to Find Your Dream Property?
+                </h3>
+                <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                  Get expert guidance from Mumbai's most trusted real estate consultants. 
+                  We help you find the perfect property with complete legal assistance.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
+                    <Link href="/properties">Browse Properties</Link>
+                  </Button>
+                  <Button size="lg" variant="outline">
+                    <Link href="/contact">Get Consultation</Link>
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  } catch (error) {
+    console.error('Error in BlogDetailsPage:', error);
+    notFound();
+  }
 }

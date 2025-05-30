@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { Property } from '@/lib/types';
 
 // Get environment variables
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -49,12 +50,16 @@ export type Blog = {
   title: string;
   slug: string;
   content: string;
-  excerpt: string;
-  cover_image: string;
+  excerpt?: string;
+  cover_image?: string;
   created_at: string;
-  published_at: string;
+  updated_at: string;
   author?: string;
   category?: string;
+  tags?: string[];
+  is_published: boolean;
+  meta_title?: string;
+  meta_description?: string;
 };
 
 export type Testimonial = {
@@ -84,6 +89,129 @@ export type Location = {
   created_at: string;
   updated_at: string;
 };
+
+// Property functions
+export async function getProperties(options?: {
+  page?: number;
+  limit?: number;
+  filters?: {
+    location?: string;
+    property_type?: string;
+    listing_type?: string;
+    min_price?: number;
+    max_price?: number;
+    bedrooms?: number;
+    bathrooms?: number;
+    availability_status?: string;
+  };
+}) {
+  try {
+    let query = supabase
+      .from('properties')
+      .select('*');
+
+    // Apply filters
+    if (options?.filters) {
+      const { filters } = options;
+      
+      if (filters.location) {
+        query = query.eq('location', filters.location);
+      }
+      
+      if (filters.property_type) {
+        query = query.eq('property_type', filters.property_type);
+      }
+      
+      if (filters.listing_type) {
+        query = query.eq('listing_type', filters.listing_type);
+      }
+      
+      if (filters.min_price) {
+        query = query.gte('price', filters.min_price);
+      }
+      
+      if (filters.max_price) {
+        query = query.lte('price', filters.max_price);
+      }
+      
+      if (filters.bedrooms) {
+        query = query.eq('bedrooms', filters.bedrooms);
+      }
+      
+      if (filters.bathrooms) {
+        query = query.eq('bathrooms', filters.bathrooms);
+      }
+      
+      if (filters.availability_status) {
+        query = query.eq('availability_status', filters.availability_status);
+      }
+    }
+
+    // Apply pagination
+    const page = options?.page || 1;
+    const limit = options?.limit || 12;
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+
+    query = query
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Error fetching properties:', error);
+      return { data: null, error };
+    }
+
+    return { data: data as Property[], error: null };
+  } catch (err) {
+    console.error('Error in getProperties:', err);
+    return { data: null, error: err };
+  }
+}
+
+export async function getPropertyBySlug(slug: string) {
+  try {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (error) {
+      console.error('Error fetching property:', error);
+      return { data: null, error };
+    }
+
+    return { data: data as Property, error: null };
+  } catch (err) {
+    console.error('Error in getPropertyBySlug:', err);
+    return { data: null, error: err };
+  }
+}
+
+export async function getFeaturedProperties(limit = 6) {
+  try {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('is_featured', true)
+      .eq('availability_status', 'available')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error('Error fetching featured properties:', error);
+      return { data: null, error };
+    }
+
+    return { data: data as Property[], error: null };
+  } catch (err) {
+    console.error('Error in getFeaturedProperties:', err);
+    return { data: null, error: err };
+  }
+}
 
 // Helper functions for database operations
 export async function getCars() {
@@ -158,51 +286,72 @@ export async function submitContactForm(contactData: Omit<ContactMessage, 'id' |
 
 // Blog functions
 export async function getBlogs() {
-  const { data, error } = await supabase
-    .from('blogs')
-    .select('*')
-    .not('published_at', 'is', null)
-    .order('created_at', { ascending: false });
-  
-  if (error) {
-    console.error('Error fetching blogs:', error);
+  try {
+    console.log('Fetching blogs from database...');
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('is_published', true)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching blogs:', error);
+      return [];
+    }
+    
+    console.log('Blogs fetched successfully:', data?.length || 0, 'blogs found');
+    return data as Blog[];
+  } catch (err) {
+    console.error('Exception in getBlogs:', err);
     return [];
   }
-  
-  return data as Blog[];
 }
 
 export async function getBlogBySlug(slug: string) {
-  const { data, error } = await supabase
-    .from('blogs')
-    .select('*')
-    .eq('slug', slug)
-    .not('published_at', 'is', null)
-    .single();
-  
-  if (error) {
-    console.error('Error fetching blog:', error);
+  try {
+    console.log('Fetching blog by slug:', slug);
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('slug', slug)
+      .eq('is_published', true)
+      .single();
+    
+    if (error) {
+      console.error('Error fetching blog by slug:', error);
+      return null;
+    }
+    
+    console.log('Blog fetched successfully:', data?.title || 'No title');
+    return data as Blog;
+  } catch (err) {
+    console.error('Exception in getBlogBySlug:', err);
     return null;
   }
-  
-  return data as Blog;
 }
 
 export async function getRelatedBlogs(currentSlug: string, category: string, count = 2) {
-  const { data, error } = await supabase
-    .from('blogs')
-    .select('*')
-    .not('published_at', 'is', null)
-    .eq('category', category)
-    .neq('slug', currentSlug)
-    .limit(count);
-  
-  if (error) {
-    console.error('Error fetching related blogs:', error);
+  try {
+    console.log('Fetching related blogs for:', currentSlug, 'category:', category);
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('is_published', true)
+      .eq('category', category)
+      .neq('slug', currentSlug)
+      .limit(count);
+    
+    if (error) {
+      console.error('Error fetching related blogs:', error);
+      return [];
+    }
+    
+    console.log('Related blogs fetched:', data?.length || 0, 'blogs found');
+    return data as Blog[];
+  } catch (err) {
+    console.error('Exception in getRelatedBlogs:', err);
     return [];
   }
-  
-  return data as Blog[];
 }
 
 // Location functions
@@ -473,4 +622,26 @@ export async function getLocationsByCarId(carId: string) {
   }
   
   return locationsData as Location[];
+}
+
+export async function getPropertiesByLocation(locationName: string, limit = 6) {
+  try {
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('location', locationName)
+      .eq('availability_status', 'available')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error('Error fetching properties by location:', error);
+      return { data: null, error };
+    }
+
+    return { data: data as Property[], error: null };
+  } catch (err) {
+    console.error('Error in getPropertiesByLocation:', err);
+    return { data: null, error: err };
+  }
 }

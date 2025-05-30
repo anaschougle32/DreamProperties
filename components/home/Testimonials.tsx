@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { testimonials } from "@/data/testimonials";
-import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, Users, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Testimonials = () => {
@@ -31,14 +31,19 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-800 overflow-hidden">
+    <section className="py-20 bg-gray-50 overflow-hidden">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            What Our Customers Say
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <Users className="w-4 h-4" />
+            <span>Customer Success Stories</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
+            What Our Mumbai Property Buyers Say
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-            Don't just take our word for it. Here's what some of our happy customers have to say about their experience with GoDrive.
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Don't just take our word for it. Here's what families across Mumbai have to say about their 
+            property buying experience with Dream House Properties.
           </p>
         </div>
 
@@ -56,23 +61,24 @@ const Testimonials = () => {
                   key={testimonial.id}
                   className="w-full flex-shrink-0 px-4"
                 >
-                  <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md">
+                  <div className="bg-white p-8 rounded-2xl shadow-lg border-0">
                     <div className="flex gap-4 items-center mb-6">
                       {testimonial.image && (
                         <img
                           src={testimonial.image}
                           alt={testimonial.name}
-                          className="w-16 h-16 rounded-full object-cover"
+                          className="w-16 h-16 rounded-full object-cover shadow-md"
                         />
                       )}
                       <div>
-                        <h4 className="font-semibold text-lg">
+                        <h4 className="font-bold text-lg text-gray-900">
                           {testimonial.name}
                         </h4>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm">
+                        <p className="text-gray-600 text-sm font-medium flex items-center gap-1">
+                          <Building2 className="w-4 h-4" />
                           {testimonial.city}
                         </p>
-                        <div className="flex mt-1">
+                        <div className="flex mt-2">
                           {Array.from({ length: 5 }).map((_, idx) => (
                             <Star
                               key={idx}
@@ -81,14 +87,14 @@ const Testimonials = () => {
                                 "mr-1",
                                 idx < testimonial.stars
                                   ? "text-yellow-500 fill-yellow-500"
-                                  : "text-gray-300 dark:text-gray-600"
+                                  : "text-gray-300"
                               )}
                             />
                           ))}
                         </div>
                       </div>
                     </div>
-                    <blockquote className="text-gray-700 dark:text-gray-300 italic">
+                    <blockquote className="text-gray-700 italic text-lg leading-relaxed">
                       "{testimonial.message}"
                     </blockquote>
                   </div>
@@ -101,7 +107,7 @@ const Testimonials = () => {
           <Button
             variant="outline"
             size="icon"
-            className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-white dark:bg-gray-900 shadow-md rounded-full"
+            className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-white shadow-lg rounded-full border-0 hover:shadow-xl"
             onClick={handlePrev}
           >
             <ChevronLeft className="h-5 w-5" />
@@ -109,14 +115,14 @@ const Testimonials = () => {
           <Button
             variant="outline"
             size="icon"
-            className="absolute top-1/2 -right-4 transform -translate-y-1/2 bg-white dark:bg-gray-900 shadow-md rounded-full"
+            className="absolute top-1/2 -right-4 transform -translate-y-1/2 bg-white shadow-lg rounded-full border-0 hover:shadow-xl"
             onClick={handleNext}
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
 
           {/* Dots */}
-          <div className="flex justify-center mt-6 space-x-2">
+          <div className="flex justify-center mt-8 space-x-2">
             {testimonials.map((_, idx) => (
               <button
                 key={idx}
@@ -125,14 +131,36 @@ const Testimonials = () => {
                   setActiveIndex(idx);
                 }}
                 className={cn(
-                  "w-2.5 h-2.5 rounded-full transition-colors",
+                  "w-3 h-3 rounded-full transition-all duration-300",
                   idx === activeIndex
-                    ? "bg-blue-600"
-                    : "bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
+                    ? "bg-blue-600 scale-125"
+                    : "bg-gray-300 hover:bg-gray-400"
                 )}
                 aria-label={`Go to testimonial ${idx + 1}`}
               />
             ))}
+          </div>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="mt-16 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-900 mb-1">4.9/5</div>
+              <div className="text-sm text-gray-600">Average Rating</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-900 mb-1">1000+</div>
+              <div className="text-sm text-gray-600">Happy Families</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-900 mb-1">500+</div>
+              <div className="text-sm text-gray-600">Properties Sold</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-900 mb-1">10+</div>
+              <div className="text-sm text-gray-600">Years Experience</div>
+            </div>
           </div>
         </div>
       </div>

@@ -3,47 +3,56 @@ import { Testimonial } from "@/lib/types";
 export const testimonials: Testimonial[] = [
   {
     id: "1",
-    name: "Rahul Sharma",
-    city: "Delhi",
+    name: "Rajesh & Priya Sharma",
+    city: "Bandra West, Mumbai",
     message:
-      "Had an amazing experience with GoDrive in Goa. The car was in pristine condition, and the unlimited kilometers was a real bonus as we explored all corners of Goa! Highly recommend for family trips.",
+      "Dream House Properties helped us find our perfect 3BHK apartment in Bandra West with sea views. Their team's knowledge of the Mumbai market and transparent approach made the entire process smooth. We couldn't be happier with our new home!",
     stars: 5,
     image: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
   },
   {
     id: "2",
-    name: "Priya Patel",
-    city: "Mumbai",
+    name: "Amit Patel",
+    city: "Powai, Mumbai",
     message:
-      "The process was seamless from booking to return. They delivered the car to our hotel in North Goa and the staff was extremely helpful in explaining all the features. Will definitely use GoDrive again!",
+      "As a first-time property buyer in Mumbai, I was overwhelmed by the process. Dream House Properties guided me through every step, from property selection in Powai to legal documentation. Their RERA compliance expertise gave me complete confidence.",
     stars: 5,
     image: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg",
   },
   {
     id: "3",
-    name: "Akash Malhotra",
-    city: "Bangalore",
+    name: "Kavya Malhotra",
+    city: "Juhu, Mumbai",
     message:
-      "Having our own car made our Goa trip so much more convenient. We could visit secluded beaches and restaurants without worrying about transportation. GoDrive's rates were reasonable and their customer service was excellent.",
-    stars: 4,
+      "Excellent service for our villa purchase in Juhu! The team's local knowledge of Mumbai's prime locations and their honest market analysis helped us make the right investment decision. Highly recommend for luxury property buyers.",
+    stars: 5,
     image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg",
   },
   {
     id: "4",
-    name: "Sneha Reddy",
-    city: "Hyderabad",
+    name: "Suresh & Meera Reddy",
+    city: "Lower Parel, Mumbai",
     message:
-      "I rented an Innova Crysta for our family vacation in Goa and it was perfect. The car was well-maintained and spacious enough for all our luggage. The unlimited kilometers policy was a definite plus!",
+      "We invested in a premium apartment in Lower Parel through Dream House Properties. Their investment advisory was spot-on, and the property has already appreciated significantly. Professional team with deep Mumbai market expertise.",
     stars: 5,
     image: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg",
   },
   {
     id: "5",
-    name: "Karan Singh",
-    city: "Chandigarh",
+    name: "Arjun Singh",
+    city: "Andheri West, Mumbai",
     message:
-      "GoDrive's quick response and flexibility with pickup/drop locations made our trip hassle-free. The car was fuel-efficient and comfortable for long drives along the coastal roads of Goa.",
-    stars: 4,
+      "Dream House Properties made my property search in Andheri West effortless. Their curated listings, site visit coordination, and home loan assistance saved me months of effort. Transparent pricing with no hidden charges!",
+    stars: 5,
     image: "https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg",
+  },
+  {
+    id: "6",
+    name: "Neha & Vikram Joshi",
+    city: "Worli, Mumbai",
+    message:
+      "Outstanding experience buying our dream penthouse in Worli! The team's attention to detail, legal expertise, and post-purchase support exceeded our expectations. They truly understand Mumbai's luxury real estate market.",
+    stars: 5,
+    image: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg",
   },
 ];
