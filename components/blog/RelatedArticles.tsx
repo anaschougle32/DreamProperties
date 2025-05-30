@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { BlogPost } from '@/types/blog';
+import type { BlogPost } from '@/lib/types';
 import BlogCard from './BlogCard';
 
 interface RelatedArticlesProps {

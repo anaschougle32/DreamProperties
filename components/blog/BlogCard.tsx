@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { CalendarDays } from "lucide-react";
 import { formatDistance } from "date-fns";
-import type { BlogPost } from "@/types/blog";
+import type { BlogPost } from "@/lib/types";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
